@@ -41,7 +41,7 @@ export default function LoginPage() {
             <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-4 ring-1 ring-emerald-500/30">
               <Scissors className="w-8 h-8 text-emerald-400" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Stylo</h1>
+            <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Kallos</h1>
             <p className="text-slate-500 mt-2 text-sm text-center">
               Accedi al tuo salone
             </p>

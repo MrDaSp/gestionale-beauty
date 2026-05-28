@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 import type { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#10b981",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -22,14 +22,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Dikast | Gestionale Avvocati",
-  description: "L'ecosistema cloud per il tuo studio legale.",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Dikast",
-  },
+  title: "Kallos | Beauty Management",
+  description: "Il gestionale cloud per il tuo salone di bellezza.",
   icons: {
     apple: "/icon-192x192.png",
   },
@@ -43,28 +37,10 @@ export default function RootLayout({
   return (
     <html
       lang="it"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(
-                    function(registration) {
-                      console.log('Service Worker registration successful');
-                    },
-                    function(err) {
-                      console.log('Service Worker registration failed: ', err);
-                    }
-                  );
-                });
-              }
-            `,
-          }}
-        />
       </body>
     </html>
   );

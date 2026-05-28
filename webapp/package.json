@@ -1,10 +1,10 @@
 {
-  "name": "webapp",
+  "name": "kallos-beauty",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "NEXT_IGNORE_ESLINT=1 next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
@@ -15,20 +15,18 @@
     "date-fns": "^4.3.0",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.16.0",
-    "next": "^14.2.16",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "resend": "^6.12.4",
-    "svix": "^1.94.0",
+    "next": "15.3.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "^14.2.16",
+    "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
