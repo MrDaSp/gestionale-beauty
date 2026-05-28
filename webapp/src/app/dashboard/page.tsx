@@ -80,9 +80,9 @@ export default function DashboardPage() {
         </Link>
 
         {/* Quick Action: Upload */}
-        <Link href="/dashboard/inbox" className="glass rounded-3xl p-6 border border-slate-200 hover:border-emerald-500/50 transition-all group block bg-gradient-to-br from-blue-900/20 to-transparent">
+        <Link href="/dashboard/inbox" className="glass rounded-3xl p-6 border border-slate-200 hover:border-emerald-500/50 transition-all group block bg-gradient-to-br from-emerald-900/20 to-transparent">
           <div className="flex justify-between items-start mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-blue-500/30">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/30">
               <Upload className="w-6 h-6" />
             </div>
           </div>

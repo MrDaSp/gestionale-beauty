@@ -182,7 +182,7 @@ export default function SettingsPage() {
                           </p>
                         </div>
                       ) : (
-                        <button onClick={generateTelegramCode} className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]">
+                        <button onClick={generateTelegramCode} className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98]">
                           Genera Codice di Collegamento
                         </button>
                       )}

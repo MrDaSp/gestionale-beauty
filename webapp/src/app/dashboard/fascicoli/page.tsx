@@ -79,7 +79,7 @@ export default function FascicoliPage() {
           </h1>
           <p className="text-slate-500 mt-2">Gestisci tutte le schede trattamento dei tuoi clienti.</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
+        <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
           <Plus className="w-5 h-5" />
           Nuovo Trattamento
         </button>
