@@ -82,8 +82,4 @@ export async function register(formData: FormData) {
   // Since we created the user via Admin API, we should let the user log in directly on the frontend
   // Or we can just redirect them to login page to sign in
   redirect('/login?registered=true')
-  } catch (e: any) {
-    console.error("Register catch error:", e);
-    return { error: 'Si è verificato un errore di rete o server. Riprova.' }
-  }
 }
