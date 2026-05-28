@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/email/webhook/route": "/api/email/webhook",
+  "/api/telegram/webhook/route": "/api/telegram/webhook",
+  "/dashboard/agenda/page": "/dashboard/agenda",
+  "/dashboard/clienti/page": "/dashboard/clienti",
+  "/dashboard/fascicoli/[id]/page": "/dashboard/fascicoli/[id]",
+  "/dashboard/fascicoli/page": "/dashboard/fascicoli",
+  "/dashboard/inbox/page": "/dashboard/inbox",
+  "/dashboard/page": "/dashboard",
+  "/dashboard/settings/page": "/dashboard/settings",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/page": "/login",
+  "/page": "/",
+  "/register/page": "/register"
+}

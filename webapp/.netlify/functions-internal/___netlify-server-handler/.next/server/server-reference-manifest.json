@@ -1,0 +1,30 @@
+{
+  "node": {
+    "4053d3b4ae51ec6fe9a97858d79d4c0a1bb0924fd0": {
+      "workers": {
+        "app/login/page": {
+          "moduleId": 40246,
+          "async": false,
+          "exportedName": "login",
+          "filename": "src/app/login/actions.ts"
+        }
+      },
+      "filename": "src/app/login/actions.ts",
+      "exportedName": "login"
+    },
+    "408b3894b9c0e66bdc27266207fb69e6a7ff1ac290": {
+      "workers": {
+        "app/register/page": {
+          "moduleId": 17527,
+          "async": false,
+          "exportedName": "register",
+          "filename": "src/app/register/actions.ts"
+        }
+      },
+      "filename": "src/app/register/actions.ts",
+      "exportedName": "register"
+    }
+  },
+  "edge": {},
+  "encryptionKey": "uSqkdQPOuYE8RCDrlgvk+vpmyV5lDShQhOvCxb0czdI="
+}

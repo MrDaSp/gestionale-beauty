@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/email/webhook/route": "app/api/email/webhook/route.js",
+  "/api/telegram/webhook/route": "app/api/telegram/webhook/route.js",
+  "/dashboard/agenda/page": "app/dashboard/agenda/page.js",
+  "/dashboard/clienti/page": "app/dashboard/clienti/page.js",
+  "/dashboard/fascicoli/[id]/page": "app/dashboard/fascicoli/[id]/page.js",
+  "/dashboard/fascicoli/page": "app/dashboard/fascicoli/page.js",
+  "/dashboard/inbox/page": "app/dashboard/inbox/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/settings/page": "app/dashboard/settings/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/register/page": "app/register/page.js"
+}
