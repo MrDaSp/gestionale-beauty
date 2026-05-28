@@ -58,14 +58,7 @@ export default function SettingsPage() {
     loadUser()
   }, [router, supabase])
 
-  async function generateTelegramCode() {
-    if (!user) return
-    // Genera un codice casuale es. KALLOS-A1B2
-    const code = 'KALLOS-' + Math.random().toString(36).substring(2, 6).toUpperCase()
-    
-    await supabase.from('users').update({ telegram_link_code: code }).eq('id', user.id)
-    setUser({ ...user, telegram_link_code: code })
-  }
+  // generateTelegramCode removed
 
   async function handleSave() {
     if (!user) return
@@ -111,12 +104,6 @@ export default function SettingsPage() {
           </button>
           <button onClick={() => setActiveTab('profilo')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${activeTab === 'profilo' ? 'bg-emerald-600/10 text-emerald-400' : 'text-slate-500 hover:bg-slate-100/50'}`}>
             <User className="w-5 h-5" /> Profilo Staff
-          </button>
-          <button onClick={() => setActiveTab('telegram')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${activeTab === 'telegram' ? 'bg-emerald-600/10 text-emerald-400' : 'text-slate-500 hover:bg-slate-100/50'}`}>
-            <Smartphone className="w-5 h-5" /> Bot Telegram
-          </button>
-          <button onClick={() => setActiveTab('email')} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all ${activeTab === 'email' ? 'bg-emerald-600/10 text-emerald-400' : 'text-slate-500 hover:bg-slate-100/50'}`}>
-            <Mail className="w-5 h-5" /> Email Inbound
           </button>
         </div>
 
@@ -227,89 +214,7 @@ export default function SettingsPage() {
                 </motion.div>
               )}
 
-              {activeTab === 'telegram' && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-3xl p-6 border border-slate-200">
-                  <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                    <Smartphone className="w-5 h-5 text-emerald-500" />
-                    Integrazione Kallos Telegram Bot
-                  </h2>
-                  <p className="text-sm text-slate-500 mb-6">
-                    Inoltra le foto e i documenti che ricevi su WhatsApp direttamente al Bot Telegram di Kallos.
-                    Il Bot ti chiederà in quale scheda trattamento salvarli.
-                  </p>
-                  
-                  {user?.telegram_chat_id ? (
-                    <div className="bg-emerald-50/80 p-6 rounded-xl border border-emerald-200 flex flex-col items-center text-center">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-3">
-                        <Smartphone className="w-6 h-6 text-emerald-600" />
-                      </div>
-                      <h4 className="font-semibold text-emerald-800 text-lg mb-1">Bot Connesso con Successo!</h4>
-                      <p className="text-sm text-emerald-600">Il tuo account Telegram è stato agganciato. Ora puoi condividere file al @KallosBot.</p>
-                    </div>
-                  ) : (
-                    <div className="bg-emerald-50/50 p-6 rounded-xl border border-emerald-100 text-center">
-                      <h4 className="font-semibold text-slate-800 text-lg mb-2">Connetti il tuo Account</h4>
-                      <p className="text-sm text-slate-600 mb-6">Genera un codice univoco per collegare la tua app Telegram al tuo salone su Kallos.</p>
-                      
-                      {user?.telegram_link_code ? (
-                        <div className="space-y-4">
-                          <div className="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm inline-block">
-                            <p className="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Il tuo codice segreto</p>
-                            <p className="text-2xl font-bold tracking-widest text-emerald-600 font-mono">{user.telegram_link_code}</p>
-                          </div>
-                          <p className="text-sm text-slate-600 max-w-md mx-auto">
-                            Apri Telegram, cerca <strong>@KallosBot</strong> e inviagli questo codice esatto.
-                          </p>
-                        </div>
-                      ) : (
-                        <button onClick={generateTelegramCode} className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98]">
-                          Genera Codice di Collegamento
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </motion.div>
-              )}
-
-              {activeTab === 'email' && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-3xl p-6 border border-slate-200">
-                  <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                    <Mail className="w-5 h-5 text-emerald-500" />
-                    Integrazione Inoltro Email
-                  </h2>
-                  <p className="text-sm text-slate-500 mb-6">
-                    Inoltra qualsiasi email con allegati (foto, immagini, documenti) all'indirizzo speciale di Kallos. Il sistema li salverà in automatico!
-                  </p>
-                  
-                  <div className="bg-emerald-50/50 p-6 rounded-xl border border-emerald-100 mb-6">
-                    <p className="text-sm text-slate-700 font-medium mb-3">Indirizzo di Inoltro:</p>
-                    <div className="bg-white p-3 rounded-lg border border-emerald-200 inline-block">
-                      <p className="text-lg font-mono font-bold text-emerald-600 select-all">foto@kallos.dani-sys.it</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4 text-sm text-slate-600">
-                    <p className="flex items-start gap-2">
-                      <span className="text-emerald-500 font-bold mt-0.5">✓</span>
-                      <span>
-                        <strong>Nessuna configurazione necessaria:</strong> Kallos riconoscerà automaticamente che l'email proviene da te perché il mittente corrisponde alla tua email di registrazione (<strong>{user?.email}</strong>).
-                      </span>
-                    </p>
-                    <p className="flex items-start gap-2">
-                      <span className="text-emerald-500 font-bold mt-0.5">✓</span>
-                      <span>
-                        <strong>Smistamento via Telegram:</strong> Appena inoltrerai un'email, il Bot Telegram ti manderà un messaggio chiedendoti in quale scheda trattamento archiviare gli allegati estratti.
-                      </span>
-                    </p>
-                    <p className="flex items-start gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100">
-                      <Shield className="w-5 h-5 shrink-0" />
-                      <span>
-                        <strong>Attenzione:</strong> Questa funzione è attiva solo se inoltri l'email dal tuo indirizzo personale associato a Kallos. I clienti non possono inviare documenti direttamente a questo indirizzo.
-                      </span>
-                    </p>
-                  </div>
-                </motion.div>
-              )}
+              {/* End Tabs */}
             </>
           )}
         </div>
