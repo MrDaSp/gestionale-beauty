@@ -61,9 +61,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <header className="md:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-xl border-b border-slate-200 z-20 shrink-0">
         <div className="flex items-center gap-3">
            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-             <span className="font-bold text-emerald-400">S</span>
+             <span className="font-bold text-emerald-400">K</span>
            </div>
-           <h2 className="font-bold text-lg tracking-tight text-slate-900">Stylo</h2>
+           <h2 className="font-bold text-lg tracking-tight text-slate-900">Kallos</h2>
         </div>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -79,10 +79,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white/95 backdrop-blur-xl border-r border-slate-200 flex flex-col transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 hidden md:flex items-center gap-3 border-b border-slate-200 shrink-0">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-            <span className="font-bold text-emerald-400 text-xl">S</span>
+            <span className="font-bold text-emerald-400 text-xl">K</span>
           </div>
           <div>
-            <h2 className="font-bold text-lg tracking-tight">Stylo</h2>
+            <h2 className="font-bold text-lg tracking-tight">Kallos</h2>
             <p className="text-xs text-slate-500">{workspace?.nome || 'Caricamento...'}</p>
           </div>
         </div>

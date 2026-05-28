@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Plus, Search, Building, User, Phone, Mail, FileText, Loader2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
+import Link from 'next/link'
 
 export default function ClientiPage() {
   const supabase = createClient()
@@ -16,9 +17,10 @@ export default function ClientiPage() {
   // Form state
   const [nome, setNome] = useState('')
   const [cognome, setCognome] = useState('')
-  const [codiceFiscale, setCodiceFiscale] = useState('')
   const [email, setEmail] = useState('')
   const [telefono, setTelefono] = useState('')
+  const [dataNascita, setDataNascita] = useState('')
+  const [noteAllergie, setNoteAllergie] = useState('')
 
   useEffect(() => {
     async function loadData() {
@@ -45,7 +47,8 @@ export default function ClientiPage() {
       workspace_id: workspaceId,
       nome,
       cognome,
-      codice_fiscale: codiceFiscale,
+      data_nascita: dataNascita || null,
+      note_allergie: noteAllergie,
       email,
       telefono
     }).select().single()
@@ -56,7 +59,8 @@ export default function ClientiPage() {
       // Reset form
       setNome('')
       setCognome('')
-      setCodiceFiscale('')
+      setDataNascita('')
+      setNoteAllergie('')
       setEmail('')
       setTelefono('')
     } else {
@@ -86,7 +90,7 @@ export default function ClientiPage() {
       <div className="glass rounded-2xl p-4 border border-slate-200 flex items-center justify-between">
         <div className="relative w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-          <input type="text" placeholder="Cerca per nome, cognome o CF..." className="w-full bg-white/50 border border-slate-300 rounded-xl py-2 pl-10 pr-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" />
+          <input type="text" placeholder="Cerca per nome o telefono..." className="w-full bg-white/50 border border-slate-300 rounded-xl py-2 pl-10 pr-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" />
         </div>
       </div>
 
@@ -109,19 +113,21 @@ export default function ClientiPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {clienti.map((cliente) => (
-            <motion.div key={cliente.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-2xl p-5 border border-slate-200 hover:border-emerald-500/50 transition-all cursor-pointer group">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold text-xl border border-emerald-500/20">
-                  {cliente.nome.charAt(0)}{cliente.cognome.charAt(0)}
+            <Link href={`/dashboard/clienti/${cliente.id}`} key={cliente.id}>
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-2xl p-5 border border-slate-200 hover:border-emerald-500/50 transition-all cursor-pointer group h-full">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold text-xl border border-emerald-500/20">
+                    {cliente.nome.charAt(0)}{cliente.cognome.charAt(0)}
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900 group-hover:text-emerald-400 transition-colors">{cliente.nome} {cliente.cognome}</h3>
-              <div className="mt-4 space-y-2 text-sm text-slate-500">
-                {cliente.telefono && <div className="flex items-center gap-2"><Phone className="w-4 h-4" /> {cliente.telefono}</div>}
-                {cliente.email && <div className="flex items-center gap-2"><Mail className="w-4 h-4" /> {cliente.email}</div>}
-                {cliente.codice_fiscale && <div className="flex items-center gap-2"><FileText className="w-4 h-4" /> {cliente.codice_fiscale}</div>}
-              </div>
-            </motion.div>
+                <h3 className="text-lg font-semibold text-slate-900 group-hover:text-emerald-400 transition-colors">{cliente.nome} {cliente.cognome}</h3>
+                <div className="mt-4 space-y-2 text-sm text-slate-500">
+                  {cliente.telefono && <div className="flex items-center gap-2"><Phone className="w-4 h-4" /> {cliente.telefono}</div>}
+                  {cliente.email && <div className="flex items-center gap-2"><Mail className="w-4 h-4" /> {cliente.email}</div>}
+                  {cliente.note_allergie && <div className="flex items-center gap-2"><FileText className="w-4 h-4" /> <span className="truncate">{cliente.note_allergie}</span></div>}
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       )}
@@ -154,8 +160,12 @@ export default function ClientiPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Note / Allergie</label>
-                  <input type="text" value={codiceFiscale} onChange={e => setCodiceFiscale(e.target.value.toUpperCase())} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none uppercase transition-all" />
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Data di Nascita</label>
+                  <input type="date" value={dataNascita} onChange={e => setDataNascita(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Note / Allergie (Formula Colore, etc)</label>
+                  <textarea value={noteAllergie} onChange={e => setNoteAllergie(e.target.value)} rows={3} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
