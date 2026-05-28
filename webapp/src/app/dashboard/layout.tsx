@@ -43,10 +43,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { name: 'Scrivania', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Rubrica Clienti', href: '/dashboard/clienti', icon: Users },
-    { name: 'Trattamenti', href: '/dashboard/fascicoli', icon: Sparkles },
-    { name: 'Galleria Foto', href: '/dashboard/inbox', icon: Inbox },
-    { name: 'Agenda', href: '/dashboard/agenda', icon: Calendar },
+    { name: 'Clienti & Storico', href: '/dashboard/clienti', icon: Users },
+    { name: 'Catalogo Servizi', href: '/dashboard/servizi', icon: Sparkles },
+    { name: 'Agenda Appuntamenti', href: '/dashboard/agenda', icon: Calendar },
+    { name: 'Galleria & Inbox', href: '/dashboard/inbox', icon: Inbox },
   ]
 
   async function handleLogout() {
