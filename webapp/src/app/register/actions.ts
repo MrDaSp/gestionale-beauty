@@ -15,7 +15,7 @@ export async function register(formData: FormData) {
   const password = formData.get('password') as string
   const nome = formData.get('nome') as string
   const cognome = formData.get('cognome') as string
-  const type = formData.get('type') as string // 'singolo' or 'studio'
+  const type = formData.get('type') as string // 'singolo' or 'salone'
   const studioName = formData.get('studio_name') as string
 
   // 1. Create the user in Supabase Auth
@@ -42,7 +42,7 @@ export async function register(formData: FormData) {
   if (userError) return { error: 'Errore creazione profilo utente: ' + userError.message }
 
   // 3. Create the Workspace
-  const finalStudioName = type === 'studio' && studioName ? studioName : `Studio Legale ${cognome}`
+  const finalStudioName = type === 'salone' && studioName ? studioName : `Salone ${cognome}`
   
   const { data: workspaceData, error: workspaceError } = await supabaseAdmin.from('workspaces').insert({
     nome: finalStudioName,
@@ -51,6 +51,17 @@ export async function register(formData: FormData) {
 
   if (workspaceError || !workspaceData) {
     return { error: 'Errore creazione workspace: ' + workspaceError?.message }
+  }
+
+  // 3.5 Create the default settings for the salon
+  const { error: settingsError } = await supabaseAdmin.from('impostazioni_salone').insert({
+    workspace_id: workspaceData.id,
+    modulo_parrucchieria: true,
+    modulo_estetica: false,
+  })
+
+  if (settingsError) {
+    return { error: 'Errore creazione impostazioni salone: ' + settingsError.message }
   }
 
   // 4. Link User to Workspace as Owner

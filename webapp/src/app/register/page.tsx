@@ -9,7 +9,7 @@ import Link from 'next/link'
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [type, setType] = useState('singolo') // 'singolo' or 'studio'
+  const [type, setType] = useState('singolo') // 'singolo' or 'salone'
   const [showPassword, setShowPassword] = useState(false)
 
   async function handleSubmit(formData: FormData) {
@@ -57,10 +57,10 @@ export default function RegisterPage() {
                 <span className="text-sm font-medium text-slate-700">Freelance</span>
               </div>
               <div 
-                onClick={() => setType('studio')}
-                className={`cursor-pointer flex flex-col items-center p-3 rounded-xl border transition-all ${type === 'studio' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-300 bg-white/50 hover:bg-slate-100'}`}
+                onClick={() => setType('salone')}
+                className={`cursor-pointer flex flex-col items-center p-3 rounded-xl border transition-all ${type === 'salone' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-300 bg-white/50 hover:bg-slate-100'}`}
               >
-                <Building className={`w-6 h-6 mb-1 ${type === 'studio' ? 'text-emerald-400' : 'text-slate-500'}`} />
+                <Building className={`w-6 h-6 mb-1 ${type === 'salone' ? 'text-emerald-400' : 'text-slate-500'}`} />
                 <span className="text-sm font-medium text-slate-700">Salone / Centro Estetico</span>
               </div>
             </div>
@@ -82,11 +82,11 @@ export default function RegisterPage() {
               />
             </div>
 
-            {type === 'studio' && (
+            {type === 'salone' && (
               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
                 <input
                   name="studio_name"
-                  required={type === 'studio'}
+                  required={type === 'salone'}
                   placeholder="Nome del Salone (es. Salone Bella Vita)"
                   className="w-full bg-white/50 border border-slate-300 rounded-xl py-3 px-4 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
