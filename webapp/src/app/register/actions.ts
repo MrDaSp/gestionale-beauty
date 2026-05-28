@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
-import fetch from 'cross-fetch'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -21,7 +20,13 @@ export async function register(formData: FormData) {
         persistSession: false,
       },
       global: {
-        fetch: fetch
+        fetch: (url, options) => {
+          return fetch(url, {
+            ...options,
+            cache: 'no-store',
+            keepalive: true,
+          });
+        }
       }
     });
 
