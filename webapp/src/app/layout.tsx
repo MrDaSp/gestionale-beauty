@@ -24,7 +24,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Kallos | Beauty Management",
   description: "Il gestionale cloud per il tuo salone di bellezza.",
+  manifest: "/manifest.json",
   icons: {
+    icon: "/icon-192x192.png",
     apple: "/icon-192x192.png",
   },
 };
@@ -39,9 +41,28 @@ export default function RootLayout({
       lang="it"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(
+                    function(reg) { console.log('SW registered:', reg.scope); },
+                    function(err) { console.log('SW registration failed:', err); }
+                  );
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
 }
+
