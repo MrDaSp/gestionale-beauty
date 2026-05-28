@@ -38,8 +38,8 @@ export default function LoginPage() {
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
 
           <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-4 ring-1 ring-emerald-500/30">
-              <Scissors className="w-8 h-8 text-emerald-400" />
+            <div className="w-20 h-20 mb-4 rounded-2xl overflow-hidden ring-2 ring-emerald-500/30 shadow-lg">
+              <img src="/logo.jpg" alt="Kallos Logo" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Kallos</h1>
             <p className="text-slate-500 mt-2 text-sm text-center">

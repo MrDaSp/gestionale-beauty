@@ -60,8 +60,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Topbar */}
       <header className="md:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-xl border-b border-slate-200 z-20 shrink-0">
         <div className="flex items-center gap-3">
-           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-             <span className="font-bold text-emerald-400">K</span>
+           <div className="w-8 h-8 rounded-lg overflow-hidden ring-1 ring-emerald-500/30 shadow-sm">
+             <img src="/logo.jpg" alt="Kallos" className="w-full h-full object-cover" />
            </div>
            <h2 className="font-bold text-lg tracking-tight text-slate-900">Kallos</h2>
         </div>
@@ -78,8 +78,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar (Nascosta su mobile, fissa su desktop) */}
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white/95 backdrop-blur-xl border-r border-slate-200 flex flex-col transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 hidden md:flex items-center gap-3 border-b border-slate-200 shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-            <span className="font-bold text-emerald-400 text-xl">K</span>
+          <div className="w-10 h-10 rounded-xl overflow-hidden ring-1 ring-emerald-500/30 shadow-sm">
+            <img src="/logo.jpg" alt="Kallos" className="w-full h-full object-cover" />
           </div>
           <div>
             <h2 className="font-bold text-lg tracking-tight">Kallos</h2>
