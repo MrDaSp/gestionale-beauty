@@ -4,30 +4,36 @@ import { createClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
-// Use the service role key to bypass RLS for initial account/workspace provisioning
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
+// Move client creation inside the action to guarantee fresh env variables read at runtime
 export async function register(formData: FormData) {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const nome = formData.get('nome') as string
-  const cognome = formData.get('cognome') as string
-  const type = formData.get('type') as string // 'singolo' or 'salone'
-  const studioName = formData.get('studio_name') as string
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return { error: 'Configurazione server mancante (URL o Key).' }
+    }
 
-  // 1. Create the user in Supabase Auth
-  const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-    email,
-    password,
-    email_confirm: true, // Auto confirm for now
-  })
+    const supabaseAdmin = createClient(supabaseUrl, supabaseKey)
 
-  if (authError || !authData.user) {
-    return { error: authError?.message || 'Errore durante la registrazione' }
-  }
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const nome = formData.get('nome') as string
+    const cognome = formData.get('cognome') as string
+    const type = formData.get('type') as string // 'singolo' or 'salone'
+    const studioName = formData.get('studio_name') as string
+
+    // 1. Create the user in Supabase Auth
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true, // Auto confirm for now
+    })
+
+    if (authError || !authData?.user) {
+      console.error("Auth error:", authError);
+      return { error: authError?.message || 'Errore durante la registrazione' }
+    }
 
   const userId = authData.user.id
 
@@ -76,4 +82,8 @@ export async function register(formData: FormData) {
   // Since we created the user via Admin API, we should let the user log in directly on the frontend
   // Or we can just redirect them to login page to sign in
   redirect('/login?registered=true')
+  } catch (e: any) {
+    console.error("Register catch error:", e);
+    return { error: 'Si è verificato un errore di rete o server. Riprova.' }
+  }
 }
