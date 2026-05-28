@@ -1,11 +1,11 @@
 {
-  "name": "Dikast",
-  "short_name": "Dikast",
-  "description": "L'ecosistema cloud per il tuo studio legale.",
+  "name": "Kallos | Beauty Management",
+  "short_name": "Kallos",
+  "description": "Il gestionale cloud per il tuo salone di bellezza.",
   "start_url": "/dashboard",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#2563eb",
+  "background_color": "#064e3b",
+  "theme_color": "#10b981",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -17,21 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "share_target": {
-    "action": "/dashboard/inbox/upload",
-    "method": "POST",
-    "enctype": "multipart/form-data",
-    "params": {
-      "title": "title",
-      "text": "text",
-      "url": "url",
-      "files": [
-        {
-          "name": "file",
-          "accept": ["application/pdf", "image/*", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]
-        }
-      ]
-    }
-  }
+  ]
 }
