@@ -14,7 +14,21 @@ export async function register(formData: FormData) {
       return { error: 'Configurazione server mancante (URL o Key).' }
     }
 
-    const supabaseAdmin = createClient(supabaseUrl, supabaseKey)
+    const supabaseAdmin = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+      global: {
+        fetch: (url, options) => {
+          return fetch(url, {
+            ...options,
+            cache: 'no-store',
+            keepalive: true,
+          });
+        }
+      }
+    });
 
     const email = formData.get('email') as string
     const password = formData.get('password') as string
