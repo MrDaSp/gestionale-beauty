@@ -9,4 +9,3 @@
 [build.environment]
   CI = "false"
   NODE_VERSION = "20"
-  NODE_OPTIONS = "--dns-result-order=ipv4first"
