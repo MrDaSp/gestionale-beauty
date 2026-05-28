@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache'
 
 // Move client creation inside the action to guarantee fresh env variables read at runtime
 export async function register(formData: FormData) {
-  try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
     
