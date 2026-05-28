@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, FolderOpen, Inbox, Calendar, Settings, LogOut, Bell, Users, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Sparkles, FolderOpen, Inbox, Calendar, Settings, LogOut, Bell, Users, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -44,8 +44,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const navItems = [
     { name: 'Scrivania', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Rubrica Clienti', href: '/dashboard/clienti', icon: Users },
-    { name: 'Fascicoli', href: '/dashboard/fascicoli', icon: FolderOpen },
-    { name: 'Inbox Rapida', href: '/dashboard/inbox', icon: Inbox },
+    { name: 'Trattamenti', href: '/dashboard/fascicoli', icon: Sparkles },
+    { name: 'Galleria Foto', href: '/dashboard/inbox', icon: Inbox },
     { name: 'Agenda', href: '/dashboard/agenda', icon: Calendar },
   ]
 
@@ -61,9 +61,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <header className="md:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-xl border-b border-slate-200 z-20 shrink-0">
         <div className="flex items-center gap-3">
            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-             <span className="font-bold text-emerald-400">D</span>
+             <span className="font-bold text-emerald-400">S</span>
            </div>
-           <h2 className="font-bold text-lg tracking-tight text-slate-900">Dikast</h2>
+           <h2 className="font-bold text-lg tracking-tight text-slate-900">Stylo</h2>
         </div>
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
           {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -79,10 +79,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white/95 backdrop-blur-xl border-r border-slate-200 flex flex-col transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 hidden md:flex items-center gap-3 border-b border-slate-200 shrink-0">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/30">
-            <span className="font-bold text-emerald-400 text-xl">L</span>
+            <span className="font-bold text-emerald-400 text-xl">S</span>
           </div>
           <div>
-            <h2 className="font-bold text-lg tracking-tight">Dikast</h2>
+            <h2 className="font-bold text-lg tracking-tight">Stylo</h2>
             <p className="text-xs text-slate-500">{workspace?.nome || 'Caricamento...'}</p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 onClick={() => setIsMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
                   isActive 
-                    ? 'bg-emerald-600 text-white shadow-lg shadow-blue-500/20' 
+                    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' 
                     : 'text-slate-500 hover:bg-slate-100/50 hover:text-slate-700'
                 }`}
               >
@@ -126,14 +126,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <main className="flex-1 flex flex-col overflow-hidden relative z-10 w-full">
         {/* Top Header - Hidden on mobile */}
         <header className="h-16 border-b border-slate-200 bg-white/50 backdrop-blur-md hidden md:flex items-center justify-between px-8 shrink-0">
-          <h1 className="text-xl font-semibold">{greeting}, {user ? `Avv. ${user.cognome}` : 'Avvocato'}</h1>
+          <h1 className="text-xl font-semibold">{greeting}, {user ? user.cognome : 'Professionista'}</h1>
           
           <div className="flex items-center gap-4">
             <button className="relative p-2 rounded-full hover:bg-slate-100 transition-all">
               <Bell className="w-5 h-5 text-slate-500" />
               <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-900"></span>
             </button>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 border-2 border-slate-200 cursor-pointer" />
+            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 border-2 border-slate-200 cursor-pointer" />
           </div>
         </header>
 
@@ -146,4 +146,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {children}
           </div>
         </div>
-     
+      </main>
+    </div>
+  )
+}

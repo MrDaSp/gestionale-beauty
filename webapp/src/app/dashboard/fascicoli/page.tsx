@@ -73,22 +73,22 @@ export default function FascicoliPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold flex flex-wrap items-center gap-3">
+          <h1 className="text-3xl font-bold flex items-center gap-3 text-slate-900">
             <FolderOpen className="w-8 h-8 text-emerald-500" />
-            Fascicoli
+            Trattamenti
           </h1>
-          <p className="text-slate-500 mt-2">Gestisci tutte le tue pratiche e i relativi documenti.</p>
+          <p className="text-slate-500 mt-2">Gestisci tutte le schede trattamento dei tuoi clienti.</p>
         </div>
         <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
           <Plus className="w-5 h-5" />
-          Nuovo Fascicolo
+          Nuovo Trattamento
         </button>
       </div>
 
       <div className="glass rounded-2xl p-4 border border-slate-200 flex items-center justify-between">
         <div className="relative w-full sm:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-          <input type="text" placeholder="Cerca per titolo, numero pratica o cliente..." className="w-full bg-white/50 border border-slate-300 rounded-xl py-2 pl-10 pr-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" />
+          <input type="text" placeholder="Cerca per trattamento o cliente..." className="w-full bg-white/50 border border-slate-300 rounded-xl py-2 pl-10 pr-4 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all" />
         </div>
       </div>
 
@@ -101,10 +101,10 @@ export default function FascicoliPage() {
           <div className="w-20 h-20 bg-slate-100/50 rounded-full flex items-center justify-center mb-4">
             <FolderOpen className="w-10 h-10 text-slate-500" />
           </div>
-          <h3 className="text-xl font-medium text-slate-700">Nessun fascicolo aperto</h3>
-          <p className="text-slate-500 mt-2 mb-6 max-w-md">Inizia creando una nuova pratica e assegnandola a uno dei tuoi clienti.</p>
+          <h3 className="text-xl font-medium text-slate-700">Nessun trattamento attivo</h3>
+          <p className="text-slate-500 mt-2 mb-6 max-w-md">Inizia creando un nuovo trattamento per uno dei tuoi clienti.</p>
           <button onClick={() => setIsModalOpen(true)} className="bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-3 rounded-xl font-medium transition-all">
-            Crea il primo fascicolo
+            Crea il primo trattamento
           </button>
         </div>
       ) : (
@@ -120,7 +120,7 @@ export default function FascicoliPage() {
                   <h3 className="text-lg font-semibold text-slate-900 group-hover:text-emerald-400 transition-colors">{fascicolo.titolo}</h3>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mt-1">
                     <span className="flex items-center gap-1"><User className="w-4 h-4" /> {fascicolo.clienti?.nome} {fascicolo.clienti?.cognome}</span>
-                    {fascicolo.numero_pratica && <span className="flex items-center gap-1"><FileText className="w-4 h-4" /> Prat. {fascicolo.numero_pratica}</span>}
+                    {fascicolo.numero_pratica && <span className="flex items-center gap-1"><FileText className="w-4 h-4" /> Rif. {fascicolo.numero_pratica}</span>}
                     <span>• Creato il {new Date(fascicolo.created_at).toLocaleDateString('it-IT')}</span>
                   </div>
                 </div>
@@ -150,7 +150,7 @@ export default function FascicoliPage() {
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold flex items-center gap-2">
                   <FolderOpen className="w-5 h-5 text-emerald-500" />
-                  Nuova Pratica
+                  Nuovo Trattamento
                 </h2>
                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors">
                   <X className="w-5 h-5" />
@@ -175,12 +175,12 @@ export default function FascicoliPage() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Oggetto/Titolo della pratica *</label>
-                  <input required type="text" value={titolo} onChange={e => setTitolo(e.target.value)} placeholder="Es. Rossi c. Bianchi (Sinistro stradale)" className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Tipo di Trattamento *</label>
+                  <input required type="text" value={titolo} onChange={e => setTitolo(e.target.value)} placeholder="Es. Taglio + Colore Maria Rossi" className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Numero di Pratica Interno (Opzionale)</label>
-                  <input type="text" value={numeroPratica} onChange={e => setNumeroPratica(e.target.value)} placeholder="Es. 2026-045" className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Riferimento Interno (Opzionale)</label>
+                  <input type="text" value={numeroPratica} onChange={e => setNumeroPratica(e.target.value)} placeholder="Es. STYLO-001" className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
                 </div>
                 
                 <div className="pt-6 flex gap-3">
@@ -188,11 +188,14 @@ export default function FascicoliPage() {
                     Annulla
                   </button>
                   <button type="submit" disabled={saving || clienti.length === 0} className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 disabled:opacity-50">
-                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                    Apri Fascicolo
+                    {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Crea Trattamento'}
                   </button>
                 </div>
               </form>
             </motion.div>
           </div>
-     
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}

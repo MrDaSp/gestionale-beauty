@@ -1,1 +1,1 @@
-{"config":{"name":"Next.js Server Handler","generator":"@netlify/plugin-nextjs@5.15.11","nodeBundler":"none","includedFiles":["**"],"includedFilesBasePath":"D:\\DW\\gestionale avvocati\\webapp\\.netlify\\functions-internal\\___netlify-server-handler"},"version":1}
+{"config":{"name":"Next.js Server Handler","generator":"@netlify/plugin-nextjs@5.15.11","nodeBundler":"none","includedFiles":["**"],"includedFilesBasePath":"D:\\DW\\gestionale_beauty\\webapp\\.netlify\\functions-internal\\___netlify-server-handler"},"version":1}

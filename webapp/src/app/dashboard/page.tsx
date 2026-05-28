@@ -44,8 +44,10 @@ export default function DashboardPage() {
       <div className="glass rounded-3xl p-8 border border-slate-200 relative overflow-hidden flex justify-between items-center">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div className="relative z-10">
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">Benvenuto nel tuo nuovo Gestionale</h2>
-          <p className="text-slate-500 max-w-xl">La piattaforma intelligente per gestire i tuoi clienti, i tuoi fascicoli e smistare i documenti con zero passaggi inutili.</p>
+          <h2 className="text-xl font-bold text-emerald-900">Benvenuto nel tuo Salone Digitale</h2>
+          <p className="text-emerald-700 mt-2 max-w-lg">
+            La piattaforma intelligente per gestire i tuoi clienti, appuntamenti e trattamenti con zero passaggi inutili.
+          </p>
         </div>
       </div>
 
@@ -58,8 +60,8 @@ export default function DashboardPage() {
             </div>
             <span className="text-3xl font-bold text-slate-900">{stats.fascicoliAperti}</span>
           </div>
-          <h3 className="text-lg font-semibold text-slate-700">Fascicoli Aperti</h3>
-          <p className="text-sm text-slate-500 mt-1">Pratiche attualmente in corso</p>
+          <h3 className="font-semibold text-slate-900 text-lg">Trattamenti Attivi</h3>
+          <p className="text-sm text-slate-500 mt-1">Schede trattamento attive</p>
         </Link>
 
         {/* Quick Stats: Inbox */}
@@ -70,8 +72,8 @@ export default function DashboardPage() {
             </div>
             <span className="text-3xl font-bold text-slate-900">{stats.documentiOrfani}</span>
           </div>
-          <h3 className="text-lg font-semibold text-slate-700">Inbox Rapida</h3>
-          <p className="text-sm text-slate-500 mt-1">Documenti in attesa di smistamento</p>
+          <h3 className="font-semibold text-slate-900 text-lg">Galleria Foto</h3>
+          <p className="text-sm text-slate-500 mt-1">Foto prima/dopo da organizzare</p>
           {stats.documentiOrfani > 0 && (
             <div className="absolute top-6 right-6 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
           )}
@@ -84,7 +86,10 @@ export default function DashboardPage() {
               <Upload className="w-6 h-6" />
             </div>
           </div>
-          <h3 className="text-lg font-semibold text-slate-700">Caricamento Rapido</h3>
-          <p className="text-sm text-slate-500 mt-1">Zero doppio passaggio. Carica e smista subito.</p>
+          <h4 className="font-semibold text-slate-900">Carica Foto</h4>
+          <p className="text-sm text-slate-500 mt-1">Salva foto dei lavori direttamente nelle schede cliente.</p>
         </Link>
-      
+      </div>
+    </div>
+  )
+}

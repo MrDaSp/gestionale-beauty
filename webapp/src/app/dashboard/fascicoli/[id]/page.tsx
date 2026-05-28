@@ -204,4 +204,7 @@ export default function FascicoloDettaglioPage({ params }: { params: Promise<{ i
             </div>
           </div>
         </div>
-      
+      </div>
+    </div>
+  )
+}

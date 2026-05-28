@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Scale, Lock, Mail, ArrowRight, Loader2, User, Building, Eye, EyeOff } from 'lucide-react'
+import { Scissors, Lock, Mail, ArrowRight, Loader2, User, Building, Eye, EyeOff } from 'lucide-react'
 import { register } from './actions'
 import Link from 'next/link'
 
@@ -34,15 +34,15 @@ export default function RegisterPage() {
           transition={{ duration: 0.5 }}
           className="glass rounded-3xl p-8 shadow-2xl relative overflow-hidden"
         >
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
 
           <div className="flex flex-col items-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-4 ring-1 ring-emerald-500/30">
-              <Scale className="w-8 h-8 text-emerald-400" />
+              <Scissors className="w-8 h-8 text-emerald-400" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Crea il tuo Studio</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Crea il tuo Salone</h1>
             <p className="text-slate-500 mt-1 text-sm text-center">
-              Imposta il tuo Workspace su Dikast
+              Imposta il tuo spazio su Stylo
             </p>
           </div>
 
@@ -54,14 +54,14 @@ export default function RegisterPage() {
                 className={`cursor-pointer flex flex-col items-center p-3 rounded-xl border transition-all ${type === 'singolo' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-300 bg-white/50 hover:bg-slate-100'}`}
               >
                 <User className={`w-6 h-6 mb-1 ${type === 'singolo' ? 'text-emerald-400' : 'text-slate-500'}`} />
-                <span className="text-sm font-medium text-slate-700">Avvocato Singolo</span>
+                <span className="text-sm font-medium text-slate-700">Freelance</span>
               </div>
               <div 
                 onClick={() => setType('studio')}
                 className={`cursor-pointer flex flex-col items-center p-3 rounded-xl border transition-all ${type === 'studio' ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-300 bg-white/50 hover:bg-slate-100'}`}
               >
                 <Building className={`w-6 h-6 mb-1 ${type === 'studio' ? 'text-emerald-400' : 'text-slate-500'}`} />
-                <span className="text-sm font-medium text-slate-700">Studio Associato</span>
+                <span className="text-sm font-medium text-slate-700">Salone / Centro Estetico</span>
               </div>
             </div>
 
@@ -87,7 +87,7 @@ export default function RegisterPage() {
                 <input
                   name="studio_name"
                   required={type === 'studio'}
-                  placeholder="Nome dello Studio (es. Studio Legale Lex)"
+                  placeholder="Nome del Salone (es. Salone Bella Vita)"
                   className="w-full bg-white/50 border border-slate-300 rounded-xl py-3 px-4 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                 />
               </motion.div>
@@ -136,13 +136,13 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-slate-900 rounded-xl py-3 font-semibold shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70"
+              className="w-full mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl py-3 font-semibold shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Crea Workspace
+                  Crea Salone
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
@@ -151,10 +151,14 @@ export default function RegisterPage() {
 
           <div className="mt-6 pt-4 border-t border-slate-200 text-center">
             <p className="text-sm text-slate-500">
-              Hai già uno studio?{' '}
+              Hai già un salone?{' '}
               <Link href="/login" className="text-emerald-400 hover:text-emerald-300 font-medium">
                 Accedi da qui
               </Link>
             </p>
           </div>
- 
+        </motion.div>
+      </div>
+    </div>
+  )
+}

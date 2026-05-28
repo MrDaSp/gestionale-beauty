@@ -5,7 +5,7 @@ import { Calendar as CalendarIcon, Plus, LayoutGrid, List as ListIcon, Clock, Fo
 import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
-import TerminiCalculatorModal from '@/components/TerminiCalculatorModal'
+
 
 export default function AgendaPage() {
   const supabase = createClient()
@@ -17,7 +17,7 @@ export default function AgendaPage() {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list')
   const [filter, setFilter] = useState<'tutti' | 'appuntamento' | 'scadenza'>('tutti')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false)
+
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -112,18 +112,14 @@ export default function AgendaPage() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3 text-slate-900">
             <CalendarIcon className="w-8 h-8 text-emerald-500" />
-            Agenda Legale
+            Agenda Appuntamenti
           </h1>
-          <p className="text-slate-500 mt-2">La tua postazione di controllo temporale.</p>
+          <p className="text-slate-500 mt-2">Gestisci tutti i tuoi appuntamenti di bellezza e promemoria.</p>
         </div>
         <div className="flex gap-3">
-          <button onClick={() => setIsCalculatorOpen(true)} className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-5 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2 border border-indigo-200">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calculator"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-            Calcola Termini
-          </button>
-          <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
+          <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-emerald-500/20 transition-all flex items-center gap-2">
             <Plus className="w-5 h-5" />
-            Nuovo Evento
+            Nuovo Appuntamento
           </button>
         </div>
       </div>
@@ -133,7 +129,7 @@ export default function AgendaPage() {
         <div className="flex gap-2 p-1 bg-white/50 rounded-xl">
           <button onClick={() => setFilter('tutti')} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'tutti' ? 'bg-slate-200 text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}>Tutto</button>
           <button onClick={() => setFilter('appuntamento')} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'appuntamento' ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-500 hover:text-slate-900'}`}>Appuntamenti</button>
-          <button onClick={() => setFilter('scadenza')} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'scadenza' ? 'bg-red-500/20 text-red-400' : 'text-slate-500 hover:text-slate-900'}`}>Scadenze / Udienze</button>
+          <button onClick={() => setFilter('scadenza')} className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === 'scadenza' ? 'bg-red-500/20 text-red-400' : 'text-slate-500 hover:text-slate-900'}`}>Promemoria / Eventi</button>
         </div>
         <div className="flex gap-2 p-1 pr-2">
           <button onClick={() => setViewMode('list')} className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-slate-200 text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}>
@@ -154,7 +150,7 @@ export default function AgendaPage() {
             <CalendarIcon className="w-10 h-10 text-slate-500" />
           </div>
           <h3 className="text-xl font-medium text-slate-700">La tua agenda è libera</h3>
-          <p className="text-slate-500 mt-2">Non ci sono eventi o scadenze per questa vista. Goditi il relax o pianifica il tuo prossimo passo!</p>
+          <p className="text-slate-500 mt-2">Non ci sono appuntamenti in programma. Goditi il relax!</p>
         </div>
       ) : (
         <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : "space-y-4"}>
@@ -195,7 +191,7 @@ export default function AgendaPage() {
                     {ev.fascicoli?.titolo}
                   </div>
                   <Link href={`/dashboard/fascicoli/${ev.fascicolo_id}`} className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:underline">
-                    Apri Fascicolo →
+                    Vedi Scheda Cliente →
                   </Link>
                 </div>
               )}
@@ -213,7 +209,7 @@ export default function AgendaPage() {
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold flex items-center gap-2">
                   <CalendarIcon className="w-5 h-5 text-emerald-500" />
-                  Pianifica Evento
+                  Nuovo Appuntamento
                 </h2>
                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-full text-slate-500 transition-colors">
                   <X className="w-5 h-5" />
@@ -224,7 +220,7 @@ export default function AgendaPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
                     <label className="block text-sm font-medium text-slate-500 mb-1">Titolo Evento *</label>
-                    <input required type="text" placeholder="es. Incontro Mario Rossi o Memorie 183" value={titolo} onChange={e => setTitolo(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 transition-all" />
+                    <input required type="text" placeholder="es. Appuntamento Maria Rossi" value={titolo} onChange={e => setTitolo(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 transition-all" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-500 mb-1">Data e Ora *</label>
@@ -234,20 +230,20 @@ export default function AgendaPage() {
                     <label className="block text-sm font-medium text-slate-500 mb-1">Tipo di Evento *</label>
                     <select required value={tipo} onChange={e => setTipo(e.target.value as any)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 transition-all">
                       <option value="appuntamento">Appuntamento</option>
-                      <option value="scadenza">Scadenza</option>
-                      <option value="udienza">Udienza</option>
+                      <option value="scadenza">Promemoria</option>
+                      <option value="udienza">Evento Speciale</option>
                     </select>
                   </div>
                   <div className="col-span-2">
-                    <label className="block text-sm font-medium text-slate-500 mb-1">Fascicolo Collegato (Opzionale per Appuntamenti)</label>
+                    <label className="block text-sm font-medium text-slate-500 mb-1">Cliente / Scheda (Opzionale)</label>
                     <select value={selectedFascicolo} onChange={e => setSelectedFascicolo(e.target.value)} required={tipo === 'scadenza' || tipo === 'udienza'} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 transition-all">
-                      <option value="">-- Nessun Fascicolo --</option>
+                      <option value="">-- Nessun Cliente --</option>
                       {fascicoli.map(f => (
                         <option key={f.id} value={f.id}>{f.titolo}</option>
                       ))}
                     </select>
                     {(tipo === 'scadenza' || tipo === 'udienza') && !selectedFascicolo && (
-                      <p className="text-red-400 text-xs mt-1">Per Scadenze o Udienze devi necessariamente selezionare un fascicolo.</p>
+                      <p className="text-red-400 text-xs mt-1">Per Promemoria o Eventi devi selezionare un trattamento.</p>
                     )}
                   </div>
                 </div>
@@ -280,8 +276,7 @@ export default function AgendaPage() {
         )}
       </AnimatePresence>
 
-      <TerminiCalculatorModal 
-        isOpen={isCalculatorOpen} 
-        onClose={() => setIsCalculatorOpen(false)} 
-        workspaceId={workspaceId!} 
-        fascicoli=
+
+    </div>
+  )
+}

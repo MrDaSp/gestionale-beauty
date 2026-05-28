@@ -83,7 +83,7 @@ export default function InboxPage() {
       setIsUploadModalOpen(false)
       setSelectedFile(null)
       setSelectedFascicolo('')
-      alert("File caricato e smistato correttamente nel fascicolo!")
+      alert("Foto caricata e salvata correttamente nella scheda!")
 
     } catch (error) {
       console.error(error)
@@ -143,16 +143,16 @@ export default function InboxPage() {
         <div>
           <h1 className="text-3xl font-bold flex flex-wrap items-center gap-3">
             <Inbox className="w-8 h-8 text-emerald-500" />
-            Inbox Completa
+            Galleria Foto
             {documenti.length > 0 && (
               <span className="bg-emerald-600 text-white text-sm font-bold px-3 py-1 rounded-full">{documenti.length}</span>
             )}
           </h1>
-          <p className="text-slate-500 mt-2">I documenti orfani in attesa di essere smistati.</p>
+          <p className="text-slate-500 mt-2">Le foto orfane in attesa di essere organizzate.</p>
         </div>
         <button onClick={() => setIsUploadModalOpen(true)} className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 px-5 py-2.5 rounded-xl font-medium transition-all flex items-center gap-2">
           <Upload className="w-5 h-5" />
-          Carica File
+          Carica Foto
         </button>
       </div>
 
@@ -165,14 +165,14 @@ export default function InboxPage() {
           <div className="w-20 h-20 bg-slate-100/50 rounded-full flex items-center justify-center mb-4">
             <Inbox className="w-10 h-10 text-slate-500" />
           </div>
-          <h3 className="text-xl font-medium text-slate-700">La tua Inbox è vuota e pulita!</h3>
-          <p className="text-slate-500 mt-2 mb-6 max-w-md">Non ci sono file in attesa di smistamento. Tutti i documenti sono ordinati nei rispettivi fascicoli.</p>
+          <h3 className="text-xl font-medium text-slate-700">La tua Galleria è ordinata!</h3>
+          <p className="text-slate-500 mt-2 mb-6 max-w-md">Non ci sono foto in attesa di smistamento. Tutte le foto sono ordinate nelle rispettive schede trattamento.</p>
         </div>
       ) : (
         <div className="glass rounded-2xl border border-slate-200 overflow-hidden">
           <div className="p-4 border-b border-slate-200 bg-white/50 flex items-center">
             <Search className="w-5 h-5 text-slate-500 mr-3" />
-            <input type="text" placeholder="Cerca tra i file orfani..." className="bg-transparent border-none outline-none text-slate-900 w-full placeholder:text-slate-500" />
+            <input type="text" placeholder="Cerca tra le foto orfane..." className="bg-transparent border-none outline-none text-slate-900 w-full placeholder:text-slate-500" />
           </div>
           <div className="divide-y divide-slate-800/50">
             {documenti.map((doc) => (
@@ -223,7 +223,7 @@ export default function InboxPage() {
               
               <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-xl text-sm flex gap-3 mb-6">
                 <AlertCircle className="w-5 h-5 shrink-0" />
-                <p><strong>Zero Doppio Passaggio:</strong> Seleziona subito il fascicolo di destinazione. Il file salterà l'Inbox e andrà direttamente al posto giusto.</p>
+                <p><strong>Zero Doppio Passaggio:</strong> Seleziona subito il trattamento di destinazione. La foto salterà la Galleria e andrà direttamente al posto giusto.</p>
               </div>
 
               <form onSubmit={handleUpload} className="space-y-4">
@@ -232,14 +232,14 @@ export default function InboxPage() {
                   <input required type="file" onChange={e => setSelectedFile(e.target.files?.[0] || null)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">In quale fascicolo vuoi metterlo? *</label>
+                  <label className="block text-sm font-medium text-slate-500 mb-1">In quale scheda trattamento vuoi metterla? *</label>
                   {fascicoli.length === 0 ? (
                     <div className="bg-orange-500/10 border border-orange-500/20 text-orange-400 p-3 rounded-xl text-sm">
-                      Non hai ancora creato nessun fascicolo aperto.
+                      Non hai ancora creato nessun trattamento attivo.
                     </div>
                   ) : (
                     <select required value={selectedFascicolo} onChange={e => setSelectedFascicolo(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                      <option value="">-- Seleziona Fascicolo --</option>
+                      <option value="">-- Seleziona Trattamento --</option>
                       {fascicoli.map(f => (
                         <option key={f.id} value={f.id}>{f.titolo}</option>
                       ))}
@@ -253,7 +253,7 @@ export default function InboxPage() {
                   </button>
                   <button type="submit" disabled={uploading || !selectedFile || !selectedFascicolo} className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 disabled:opacity-50">
                     {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : <FolderOpen className="w-5 h-5" />}
-                    {uploading ? 'Caricamento in corso...' : 'Salva nel Fascicolo'}
+                    {uploading ? 'Caricamento in corso...' : 'Salva nella Scheda'}
                   </button>
                 </div>
               </form>
@@ -280,14 +280,14 @@ export default function InboxPage() {
               
               <form onSubmit={handleSmista} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Seleziona Fascicolo di destinazione *</label>
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Seleziona Trattamento di destinazione *</label>
                   {fascicoli.length === 0 ? (
                     <div className="bg-orange-500/10 border border-orange-500/20 text-orange-400 p-3 rounded-xl text-sm">
-                      Non hai ancora creato nessun fascicolo aperto.
+                      Non hai ancora creato nessun trattamento attivo.
                     </div>
                   ) : (
                     <select required value={smistaFascicolo} onChange={e => setSmistaFascicolo(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
-                      <option value="">-- Seleziona Fascicolo --</option>
+                      <option value="">-- Seleziona Trattamento --</option>
                       {fascicoli.map(f => (
                         <option key={f.id} value={f.id}>{f.titolo}</option>
                       ))}
@@ -307,3 +307,8 @@ export default function InboxPage() {
               </form>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}

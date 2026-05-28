@@ -44,8 +44,8 @@ export default function SettingsPage() {
 
   async function generateTelegramCode() {
     if (!user) return
-    // Genera un codice casuale es. DIKAST-A1B2
-    const code = 'DIKAST-' + Math.random().toString(36).substring(2, 6).toUpperCase()
+    // Genera un codice casuale es. STYLO-A1B2
+    const code = 'STYLO-' + Math.random().toString(36).substring(2, 6).toUpperCase()
     
     await supabase.from('users').update({ telegram_link_code: code }).eq('id', user.id)
     setUser({ ...user, telegram_link_code: code })
@@ -69,8 +69,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-8 pb-12 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold">Impostazioni Workspace</h1>
-        <p className="text-slate-500 mt-2">Gestisci il tuo account, i collaboratori e le integrazioni.</p>
+        <h1 className="text-3xl font-bold">Impostazioni Salone</h1>
+        <p className="text-slate-500 mt-2">Gestisci il tuo account e le integrazioni.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -123,12 +123,12 @@ export default function SettingsPage() {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-slate-500 mb-1">Foro di appartenenza</label>
-                        <input type="text" value={foro} onChange={(e) => setForo(e.target.value)} placeholder="Es. Milano" className="w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+                        <label className="block text-sm font-medium text-slate-500 mb-1">Specializzazione</label>
+                        <input type="text" value={foro} onChange={(e) => setForo(e.target.value)} placeholder="Es. Taglio, Colore, Estetica" className="w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-500 mb-1">Numero Albo</label>
-                        <input type="text" value={albo} onChange={(e) => setAlbo(e.target.value)} placeholder="Es. 12345" className="w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
+                        <label className="block text-sm font-medium text-slate-500 mb-1">P.IVA</label>
+                        <input type="text" value={albo} onChange={(e) => setAlbo(e.target.value)} placeholder="Es. 12345678901" className="w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
                       </div>
                     </div>
 
@@ -151,11 +151,11 @@ export default function SettingsPage() {
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="glass rounded-3xl p-6 border border-slate-200">
                   <h2 className="text-xl font-semibold mb-2 flex items-center gap-2">
                     <Smartphone className="w-5 h-5 text-emerald-500" />
-                    Integrazione Dikast Telegram Bot
+                    Integrazione Stylo Telegram Bot
                   </h2>
                   <p className="text-sm text-slate-500 mb-6">
-                    Inoltra i documenti (PDF, foto) che ricevi su WhatsApp direttamente al Bot Telegram di Dikast.
-                    Il Bot ti chiederà in quale fascicolo salvarli, senza passare dall'Inbox.
+                    Inoltra le foto e i documenti che ricevi su WhatsApp direttamente al Bot Telegram di Stylo.
+                    Il Bot ti chiederà in quale scheda trattamento salvarli.
                   </p>
                   
                   {user?.telegram_chat_id ? (
@@ -164,12 +164,12 @@ export default function SettingsPage() {
                         <Smartphone className="w-6 h-6 text-emerald-600" />
                       </div>
                       <h4 className="font-semibold text-emerald-800 text-lg mb-1">Bot Connesso con Successo!</h4>
-                      <p className="text-sm text-emerald-600">Il tuo account Telegram è stato agganciato. Ora puoi condividere file al @DikastBot.</p>
+                      <p className="text-sm text-emerald-600">Il tuo account Telegram è stato agganciato. Ora puoi condividere file al @StyloBot.</p>
                     </div>
                   ) : (
                     <div className="bg-emerald-50/50 p-6 rounded-xl border border-emerald-100 text-center">
                       <h4 className="font-semibold text-slate-800 text-lg mb-2">Connetti il tuo Account</h4>
-                      <p className="text-sm text-slate-600 mb-6">Genera un codice univoco per collegare la tua app Telegram al tuo spazio di lavoro Dikast.</p>
+                      <p className="text-sm text-slate-600 mb-6">Genera un codice univoco per collegare la tua app Telegram al tuo salone su Stylo.</p>
                       
                       {user?.telegram_link_code ? (
                         <div className="space-y-4">
@@ -178,7 +178,7 @@ export default function SettingsPage() {
                             <p className="text-2xl font-bold tracking-widest text-emerald-600 font-mono">{user.telegram_link_code}</p>
                           </div>
                           <p className="text-sm text-slate-600 max-w-md mx-auto">
-                            Apri Telegram, cerca <strong>@DikastBot</strong> e inviagli questo codice esatto.
+                            Apri Telegram, cerca <strong>@StyloBot</strong> e inviagli questo codice esatto.
                           </p>
                         </div>
                       ) : (
@@ -198,13 +198,13 @@ export default function SettingsPage() {
                     Integrazione Inoltro Email
                   </h2>
                   <p className="text-sm text-slate-500 mb-6">
-                    Inoltra qualsiasi email con allegati (PDF, Immagini, documenti Word) all'indirizzo speciale di Dikast. Il sistema li salverà in automatico!
+                    Inoltra qualsiasi email con allegati (foto, immagini, documenti) all'indirizzo speciale di Stylo. Il sistema li salverà in automatico!
                   </p>
                   
                   <div className="bg-emerald-50/50 p-6 rounded-xl border border-emerald-100 mb-6">
                     <p className="text-sm text-slate-700 font-medium mb-3">Indirizzo di Inoltro:</p>
                     <div className="bg-white p-3 rounded-lg border border-emerald-200 inline-block">
-                      <p className="text-lg font-mono font-bold text-emerald-600 select-all">inbox@dikast.dani-sys.it</p>
+                      <p className="text-lg font-mono font-bold text-emerald-600 select-all">foto@stylo.dani-sys.it</p>
                     </div>
                   </div>
 
@@ -212,21 +212,29 @@ export default function SettingsPage() {
                     <p className="flex items-start gap-2">
                       <span className="text-emerald-500 font-bold mt-0.5">✓</span>
                       <span>
-                        <strong>Nessuna configurazione necessaria:</strong> Dikast riconoscerà automaticamente che l'email proviene da te perché il mittente corrisponde alla tua email di registrazione (<strong>{user?.email}</strong>).
+                        <strong>Nessuna configurazione necessaria:</strong> Stylo riconoscerà automaticamente che l'email proviene da te perché il mittente corrisponde alla tua email di registrazione (<strong>{user?.email}</strong>).
                       </span>
                     </p>
                     <p className="flex items-start gap-2">
                       <span className="text-emerald-500 font-bold mt-0.5">✓</span>
                       <span>
-                        <strong>Smistamento via Telegram:</strong> Appena inoltrerai un'email, il Bot Telegram ti manderà un messaggio chiedendoti in quale fascicolo archiviare gli allegati estratti.
+                        <strong>Smistamento via Telegram:</strong> Appena inoltrerai un'email, il Bot Telegram ti manderà un messaggio chiedendoti in quale scheda trattamento archiviare gli allegati estratti.
                       </span>
                     </p>
                     <p className="flex items-start gap-2 text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-100">
                       <Shield className="w-5 h-5 shrink-0" />
                       <span>
-                        <strong>Attenzione:</strong> Questa funzione è attiva solo se inoltri l'email dal tuo indirizzo personale associato a Dikast. I clienti non possono inviare documenti direttamente a questo indirizzo.
+                        <strong>Attenzione:</strong> Questa funzione è attiva solo se inoltri l'email dal tuo indirizzo personale associato a Stylo. I clienti non possono inviare documenti direttamente a questo indirizzo.
                       </span>
                     </p>
                   </div>
                 </motion.div>
-              
+              )}
+            </>
+          )}
+        </div>
+
+      </div>
+    </div>
+  )
+}

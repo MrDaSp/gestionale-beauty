@@ -74,7 +74,7 @@ export default function ClientiPage() {
             <Users className="w-8 h-8 text-emerald-500" />
             Rubrica Clienti
           </h1>
-          <p className="text-slate-500 mt-2">Gestisci l'anagrafica dei tuoi assistiti.</p>
+          <p className="text-slate-500 mt-2">Gestisci l'anagrafica dei tuoi clienti.</p>
         </div>
         <button onClick={() => setIsModalOpen(true)} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
           <Plus className="w-5 h-5" />
@@ -101,7 +101,7 @@ export default function ClientiPage() {
             <Users className="w-10 h-10 text-slate-500" />
           </div>
           <h3 className="text-xl font-medium text-slate-700">Nessun cliente presente</h3>
-          <p className="text-slate-500 mt-2 mb-6 max-w-md">La tua rubrica è vuota. Crea il tuo primo cliente per poter aprire un fascicolo e organizzare i suoi documenti.</p>
+          <p className="text-slate-500 mb-6">La tua rubrica è vuota. Aggiungi il primo cliente per gestire i suoi appuntamenti e trattamenti.</p>
           <button onClick={() => setIsModalOpen(true)} className="bg-slate-100 hover:bg-slate-200 text-slate-900 px-6 py-3 rounded-xl font-medium transition-all">
             Crea il primo cliente
           </button>
@@ -154,7 +154,7 @@ export default function ClientiPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Codice Fiscale / P.IVA</label>
+                  <label className="block text-sm font-medium text-slate-500 mb-1">Note / Allergie</label>
                   <input type="text" value={codiceFiscale} onChange={e => setCodiceFiscale(e.target.value.toUpperCase())} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none uppercase transition-all" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -180,3 +180,8 @@ export default function ClientiPage() {
               </form>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
