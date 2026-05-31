@@ -24,8 +24,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center relative overflow-hidden bg-slate-50">
       {/* Background blobs */}
-      <div className="blob bg-emerald-600/30 w-96 h-96 rounded-full top-10 left-10" />
-      <div className="blob bg-indigo-500/20 w-[30rem] h-[30rem] rounded-full bottom-0 right-10" style={{ animationDelay: '-5s' }} />
+      <div className="blob bg-yellow-500/30 w-96 h-96 rounded-full top-10 left-10" />
+      <div className="blob bg-orange-500/20 w-[30rem] h-[30rem] rounded-full bottom-0 right-10" style={{ animationDelay: '-5s' }} />
 
       <div className="w-full max-w-md p-4 relative z-10">
         <motion.div
@@ -35,10 +35,10 @@ export default function LoginPage() {
           className="glass rounded-3xl p-8 shadow-2xl relative overflow-hidden"
         >
           {/* Top highlight */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-yellow-600" />
 
           <div className="flex flex-col items-center mb-8">
-            <div className="w-20 h-20 mb-4 rounded-2xl overflow-hidden ring-2 ring-emerald-500/30 shadow-lg">
+            <div className="w-20 h-20 mb-4 rounded-2xl overflow-hidden ring-2 ring-yellow-500/30 shadow-lg">
               <img src="/logo.jpg" alt="Kallos Logo" className="w-full h-full object-cover" />
             </div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Kallos</h1>
@@ -56,7 +56,7 @@ export default function LoginPage() {
                   type="email"
                   required
                   placeholder="Email salone"
-                  className="w-full bg-white/50 border border-slate-300 rounded-xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full bg-white/50 border border-slate-300 rounded-xl py-3 pl-12 pr-4 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
                 />
               </div>
 
@@ -67,7 +67,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   required
                   placeholder="Password"
-                  className="w-full bg-white/50 border border-slate-300 rounded-xl py-3 pl-12 pr-12 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  className="w-full bg-white/50 border border-slate-300 rounded-xl py-3 pl-12 pr-12 text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-all"
                 />
                 <button 
                   type="button"
@@ -92,7 +92,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl py-3 font-semibold shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70"
+              className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-white rounded-xl py-3 font-semibold shadow-lg shadow-yellow-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -108,7 +108,7 @@ export default function LoginPage() {
           <div className="mt-8 pt-6 border-t border-slate-200 text-center space-y-2">
             <p className="text-sm text-slate-500">
               Non hai ancora un Salone?{' '}
-              <Link href="/register" className="text-emerald-400 hover:text-emerald-300 font-medium">
+              <Link href="/register" className="text-yellow-600 hover:text-yellow-500 font-medium">
                 Crealo ora
               </Link>
             </p>

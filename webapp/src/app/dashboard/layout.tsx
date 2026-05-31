@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, Sparkles, FolderOpen, Inbox, Calendar, Settings, LogOut, Bell, Users, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Sparkles, FolderOpen, Inbox, Calendar, Settings, LogOut, Bell, Users, Menu, X, Shield, CreditCard } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -47,6 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Catalogo Servizi', href: '/dashboard/servizi', icon: Sparkles },
     { name: 'Agenda Appuntamenti', href: '/dashboard/agenda', icon: Calendar },
     { name: 'Galleria & Inbox', href: '/dashboard/inbox', icon: Inbox },
+    { name: 'Abbonamento', href: '/dashboard/billing', icon: CreditCard },
   ]
 
   async function handleLogout() {
@@ -109,6 +110,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         <div className="p-4 border-t border-slate-200 space-y-1">
+          {user?.email === 'admin@dani-sys.it' && (
+            <Link href="/dashboard/superadmin" onClick={() => setIsMobileMenuOpen(false)} className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all mb-2 ${
+              pathname === '/dashboard/superadmin' ? 'bg-red-600 text-white shadow-lg shadow-red-500/20' : 'text-slate-500 hover:bg-red-50 hover:text-red-600'
+            }`}>
+              <Shield className="w-5 h-5" />
+              <span className="font-bold">Super Admin</span>
+            </Link>
+          )}
           <Link href="/dashboard/settings" onClick={() => setIsMobileMenuOpen(false)} className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
             pathname === '/dashboard/settings' ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-100/50 hover:text-slate-700'
           }`}>
