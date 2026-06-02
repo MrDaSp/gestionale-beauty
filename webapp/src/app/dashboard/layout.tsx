@@ -1,6 +1,6 @@
 'use client'
 
-import { LayoutDashboard, Sparkles, FolderOpen, Inbox, Calendar, Settings, LogOut, Bell, Users, Menu, X, Shield, CreditCard } from 'lucide-react'
+import { LayoutDashboard, Sparkles, Calendar, Settings, LogOut, Bell, Users, Menu, X, Shield, CreditCard } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -46,7 +46,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Clienti & Storico', href: '/dashboard/clienti', icon: Users },
     { name: 'Catalogo Servizi', href: '/dashboard/servizi', icon: Sparkles },
     { name: 'Agenda Appuntamenti', href: '/dashboard/agenda', icon: Calendar },
-    { name: 'Galleria & Inbox', href: '/dashboard/inbox', icon: Inbox },
     { name: 'Abbonamento', href: '/dashboard/billing', icon: CreditCard },
   ]
 
@@ -84,7 +83,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           <div>
             <h2 className="font-bold text-lg tracking-tight">Kallos</h2>
-            <p className="text-xs text-slate-500">{workspace?.nome || 'Caricamento...'}</p>
+            <p className="text-xs text-slate-500">
+              {workspace?.nome || (user?.email === process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL ? 'Super Admin' : 'Caricamento...')}
+            </p>
           </div>
         </div>
 
@@ -110,7 +111,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         <div className="p-4 border-t border-slate-200 space-y-1">
-          {user?.email === 'admin@dani-sys.it' && (
+          {user?.email === process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL && (
             <Link href="/dashboard/superadmin" onClick={() => setIsMobileMenuOpen(false)} className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all mb-2 ${
               pathname === '/dashboard/superadmin' ? 'bg-red-600 text-white shadow-lg shadow-red-500/20' : 'text-slate-500 hover:bg-red-50 hover:text-red-600'
             }`}>

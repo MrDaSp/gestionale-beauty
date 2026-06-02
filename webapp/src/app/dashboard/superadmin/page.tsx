@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Shield, Save, X, Pencil } from 'lucide-react'
+import { Shield, Save, X, Pencil, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 
@@ -17,7 +17,7 @@ export default function SuperAdminPage() {
   useEffect(() => {
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session || session.user.email !== 'admin@dani-sys.it') {
+      if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
         router.push('/dashboard')
         return
       }
@@ -59,6 +59,19 @@ export default function SuperAdminPage() {
       setTimeout(() => setMessage(''), 3000)
     } catch (err) {
       setMessage('❌ Errore durante il salvataggio')
+    }
+  }
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Sei sicuro di voler eliminare definitivamente il workspace "${name}"? Questa operazione è irreversibile.`)) return
+    try {
+      const res = await fetch(`/api/superadmin?id=${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Errore durante l\'eliminazione')
+      setMessage('✅ Workspace eliminato con successo!')
+      fetchWorkspaces()
+      setTimeout(() => setMessage(''), 3000)
+    } catch (err) {
+      setMessage('❌ Errore durante l\'eliminazione')
     }
   }
 
@@ -152,9 +165,12 @@ export default function SuperAdminPage() {
                     <td className="p-4 text-slate-600 font-medium">
                       {ws.max_clients === 999999 ? '∞' : (ws.max_clients || 3)}
                     </td>
-                    <td className="p-4 text-right">
+                    <td className="p-4 text-right flex justify-end gap-2">
                       <button onClick={() => handleEdit(ws)} className="p-2 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors">
                         <Pencil className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => handleDelete(ws.id, ws.nome)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </td>
                   </>

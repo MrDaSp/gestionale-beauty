@@ -13,7 +13,7 @@ export async function register(formData: FormData) {
       return { error: 'Configurazione server mancante (URL o Key).' }
     }
 
-    const supabaseAdmin = createClient(supabaseUrl, supabaseKey)
+    const supabaseAnon = createClient(supabaseUrl, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
     const email = formData.get('email') as string
     const password = formData.get('password') as string
@@ -22,11 +22,10 @@ export async function register(formData: FormData) {
     const type = formData.get('type') as string // 'singolo' or 'salone'
     const studioName = formData.get('studio_name') as string
 
-    // 1. Create the user in Supabase Auth
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+    // 1. Create the user in Supabase Auth (triggers confirmation email)
+    const { data: authData, error: authError } = await supabaseAnon.auth.signUp({
       email,
       password,
-      email_confirm: true, // Auto confirm for now
     })
 
     if (authError || !authData?.user) {
@@ -36,7 +35,9 @@ export async function register(formData: FormData) {
 
   const userId = authData.user.id
 
-  // 2. Insert into public.users
+  // 2. Insert into public.users using ADMIN client (since user is not logged in yet)
+  const supabaseAdmin = createClient(supabaseUrl, supabaseKey)
+  
   const { error: userError } = await supabaseAdmin.from('users').insert({
     id: userId,
     email,

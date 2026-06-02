@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  kallos-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kallos-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # - NEXT_PUBLIC_SUPABASE_URL=...
+      # - NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+      # - SUPABASE_SERVICE_ROLE_KEY=...
+      # - NEXT_PUBLIC_SUPERADMIN_EMAIL=admin@dani-sys.it
+    # Usa un network custom se hai Nginx configurato con proxy pass
+    # networks:
+    #   - webnet

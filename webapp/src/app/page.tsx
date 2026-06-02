@@ -19,7 +19,7 @@ export default function KallosLanding() {
             <span>Kallos</span>
           </div>
           <div className="nav-actions">
-            <button onClick={() => router.push('/login')} className="btn-login">Accedi</button>
+            <button onClick={() => router.push('/login')} className="btn-login" style={{ marginRight: '0.5rem' }}>Accedi</button>
             <button onClick={() => router.push('/login')} className="btn-primary">Inizia Gratis</button>
           </div>
         </div>
@@ -38,16 +38,22 @@ export default function KallosLanding() {
           <p className="hero-subtitle">
             Prenotazioni intelligenti, storico trattamenti, schede clienti e gestione listini per far crescere il tuo salone di bellezza.
           </p>
-          <div className="hero-actions">
-            <button onClick={() => router.push('/login')} className="btn-primary btn-glow">
-              Crea il tuo Salone <ChevronRight size={18} />
+          <div className="hero-actions flex gap-4 justify-center items-center">
+            <button onClick={() => router.push('/login')} className="btn-primary btn-glow flex items-center">
+              Crea il tuo Salone <ChevronRight size={18} className="ml-2" />
+            </button>
+            <button 
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              className="btn-secondary"
+            >
+              Esplora Funzioni
             </button>
           </div>
         </div>
       </header>
 
       {/* Features Section */}
-      <section className="features-section">
+      <section className="features-section" id="features">
         <div className="container">
           <div className="section-header text-center">
             <h2>Gestisci il tuo salone con stile</h2>
@@ -83,22 +89,6 @@ export default function KallosLanding() {
               <div className="feature-icon-wrapper"><Briefcase className="feature-icon" /></div>
               <h3>Gestione Staff</h3>
               <p>Assegna servizi ai tuoi collaboratori e monitora le loro performance.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Esplora Funzioni Section */}
-      <section className="l-features" style={{ background: 'var(--bg-dark)', padding: '60px 0' }}>
-        <div className="container">
-          <div className="section-header text-center" style={{ marginBottom: '40px' }}>
-            <div className="badge-pill" style={{ marginBottom: '15px' }}>Esplora Funzioni</div>
-            <h2>Tutto in un'unica schermata.</h2>
-            <p style={{ maxWidth: '700px', margin: '0 auto', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>Guarda in anteprima come si presenta il gestionale. Semplice, veloce e senza distrazioni.</p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px', marginTop: '40px' }}>
-            <div style={{ width: '100%', maxWidth: '900px', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
-              <img src="/1EfZ5.jpg" alt="Kallos Dashboard Screenshot" style={{ width: '100%', display: 'block' }} />
             </div>
           </div>
         </div>
@@ -213,7 +203,7 @@ export default function KallosLanding() {
               <button onClick={() => router.push('/register')} className="btn-secondary w-100">Scegli Unlimited</button>
               <ul className="plan-features">
                 <li><CheckCircle2 size={16} /> Clienti Illimitati</li>
-                <li><CheckCircle2 size={16} /> Promemoria WhatsApp/SMS</li>
+                <li><CheckCircle2 size={16} /> Assistenza Prioritaria</li>
                 <li><CheckCircle2 size={16} /> Tutto del piano Pro</li>
               </ul>
             </div>
@@ -224,12 +214,16 @@ export default function KallosLanding() {
       {/* Footer */}
       <footer className="footer">
         <div className="container">
-          <div className="footer-content">
-            <div className="footer-brand">
+          <div className="footer-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+            <div className="footer-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Scissors className="brand-icon" />
-              <span>Kallos</span>
+              <span style={{ fontWeight: 700, fontSize: '1.2rem' }}>Kallos</span>
             </div>
-            <p className="footer-copy">&copy; 2026 Dani-Sys — P.IVA 04042160541</p>
+            <div style={{ display: 'flex', gap: '2rem', color: 'var(--text-muted)' }}>
+              <span>&copy; 2026 Dani-Sys</span>
+              <span>P.IVA 04042160541</span>
+              <a href="mailto:info@dani-sys.it" style={{ color: 'inherit', textDecoration: 'none' }}>info@dani-sys.it</a>
+            </div>
           </div>
         </div>
       </footer>

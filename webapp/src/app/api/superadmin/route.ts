@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
   const { data: { session } } = await supabaseAuth.auth.getSession()
   
-  if (!session || session.user.email !== 'admin@dani-sys.it') {
+  if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -56,7 +56,7 @@ export async function PUT(request: Request) {
 
   const { data: { session } } = await supabaseAuth.auth.getSession()
   
-  if (!session || session.user.email !== 'admin@dani-sys.it') {
+  if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -83,4 +83,46 @@ export async function PUT(request: Request) {
   }
 
   return NextResponse.json(data)
+}
+
+export async function DELETE(request: Request) {
+  const cookieStore = await cookies()
+  const supabaseAuth = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) { return cookieStore.get(name)?.value },
+      },
+    }
+  )
+
+  const { data: { session } } = await supabaseAuth.auth.getSession()
+  
+  if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+  }
+
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get('id')
+
+  if (!id) {
+    return NextResponse.json({ error: 'Missing workspace id' }, { status: 400 })
+  }
+
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  const { error } = await supabaseAdmin
+    .from('workspaces')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json({ success: true })
 }

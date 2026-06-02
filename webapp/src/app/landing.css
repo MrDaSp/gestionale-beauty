@@ -1,18 +1,20 @@
 :root {
-  --primary-color: #ffd700;
-  --primary-color-glow: rgba(255, 215, 0, 0.4);
-  --bg-dark: #1a1a14;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --border-color: rgba(255, 255, 255, 0.1);
+  --primary-color: #d4af37;
+  --primary-color-glow: rgba(212, 175, 55, 0.15);
+  --bg-dark: #121212;
+  --bg-card: #1e1e1e;
+  --text-light: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-secondary: #d1d5db;
   --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
+  --border-color: #374151;
 }
 
 body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
   background-color: var(--bg-dark);
-  color: var(--text-primary);
+  color: var(--text-light);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
 
 .landing-page {
