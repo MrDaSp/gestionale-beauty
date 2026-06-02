@@ -22,5 +22,12 @@
 ## Credenziali Twilio
 - Le credenziali Twilio fornite precedentemente per l'integrazione WhatsApp/SMS devono essere inserite nell'ambiente `webapp/.env`. Attualmente il `.env` richiede `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, e `TWILIO_PHONE_NUMBER`.
 
-## Email Verification (Da Attivare)
-- Sarà necessario implementare la verifica email nella registrazione utilizzando `nodemailer` per evitare iscritti falsi. Al momento l'iscrizione è disabilitata.
+## Email Verification & Servizi Doxen (SMTP)
+Queste credenziali sono state attivate in `webapp/.env` per gestire il recupero password e la verifica email di Kallos. Saranno il punto di partenza anche per pulire il programma **Doxen** su `doxen.dani-sys.it`.
+- **Server:** smtps.aruba.it
+- **Porta:** 465
+- **Utente:** admin@dani-sys.it
+- **Password:** Kakaroth5$
+
+> **Nota per il futuro allineamento (Doxen & API):** Le varie API contenute nella cartella "Documenti/api" andranno strutturate in modo coerente dopo aver terminato i test su Kallos, evitando sovrapposizioni di porte!
+

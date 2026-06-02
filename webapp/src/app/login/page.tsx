@@ -1,12 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { Scissors, Lock, Mail, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
-export default function LoginPage() {
+function LoginForm() {
+  const searchParams = useSearchParams()
+  const registered = searchParams.get('registered')
+  
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -56,6 +60,16 @@ export default function LoginPage() {
               Accedi al tuo salone
             </p>
           </div>
+
+          {registered && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mb-6 text-green-700 text-sm text-center bg-green-500/10 py-3 px-4 rounded-xl border border-green-500/20"
+            >
+              Registrazione completata! Controlla la tua email per verificare l'account.
+            </motion.div>
+          )}
 
           <form action={handleSubmit} className="space-y-6">
             <div className="space-y-4">
@@ -135,5 +149,13 @@ export default function LoginPage() {
         </motion.div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-yellow-500" /></div>}>
+      <LoginForm />
+    </Suspense>
   )
 }

@@ -11,9 +11,10 @@ services:
       - "4000:3000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
-      # - NEXT_PUBLIC_SUPABASE_URL=...
       # - NEXT_PUBLIC_SUPABASE_ANON_KEY=...
       # - SUPABASE_SERVICE_ROLE_KEY=...
       # - NEXT_PUBLIC_SUPERADMIN_EMAIL=admin@dani-sys.it
