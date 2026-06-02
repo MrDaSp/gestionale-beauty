@@ -1,37 +1,34 @@
 'use server'
 
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
 
 export async function updatePassword(formData: FormData) {
   const password = formData.get('password') as string
+  const token = formData.get('token') as string
   
-  const cookieStore = await cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options })
-        },
-        remove(name: string, options: any) {
-          cookieStore.set({ name, value: '', ...options })
-        },
-      },
-    }
-  )
+  if (!password || !token) {
+    return { error: 'Dati mancanti.' }
+  }
 
-  const { error } = await supabase.auth.updateUser({
-    password: password
+  const resetToken = await prisma.passwordResetToken.findUnique({
+    where: { token }
   })
 
-  if (error) {
-    return { error: 'Impossibile aggiornare la password: ' + error.message }
+  if (!resetToken || resetToken.expires < new Date()) {
+    return { error: 'Token non valido o scaduto. Richiedi un nuovo link.' }
   }
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  await prisma.user.update({
+    where: { email: resetToken.email },
+    data: { password: hashedPassword }
+  })
+
+  await prisma.passwordResetToken.delete({
+    where: { id: resetToken.id }
+  })
 
   return { success: true }
 }

@@ -3,17 +3,13 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar as CalendarIcon, Plus, User, Clock, CheckCircle2, XCircle, AlertCircle, Sparkles, Scissors, Euro, Loader2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { getAgendaData, addAppuntamento, updateAppuntamentoStatus } from './actions'
 
 export default function AgendaPage() {
-  const supabase = createClient()
-  
   const [appuntamenti, setAppuntamenti] = useState<any[]>([])
   const [clienti, setClienti] = useState<any[]>([])
   const [servizi, setServizi] = useState<any[]>([])
   const [operatori, setOperatori] = useState<any[]>([])
-  
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null)
   
   // UI State
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -37,40 +33,14 @@ export default function AgendaPage() {
 
   async function loadData() {
     setLoading(true)
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
-
-    const { data: member } = await supabase.from('workspace_members').select('workspace_id').eq('user_id', session.user.id).single()
-    if (member) {
-      setWorkspaceId(member.workspace_id)
-      
-      // Fetch Appuntamenti
-      const { data: appuntamentiData } = await supabase
-        .from('appuntamenti')
-        .select(`
-          *,
-          clienti (nome, cognome, telefono),
-          servizi (nome_servizio, categoria, settore, prezzo, durata_minuti),
-          users (nome, cognome, colore_agenda)
-        `)
-        .eq('workspace_id', member.workspace_id)
-        .order('data_ora_inizio', { ascending: true })
-        
-      if (appuntamentiData) setAppuntamenti(appuntamentiData)
-
-      // Fetch Clienti
-      const { data: clientiData } = await supabase.from('clienti').select('id, nome, cognome').eq('workspace_id', member.workspace_id).order('nome')
-      if (clientiData) setClienti(clientiData)
-
-      // Fetch Servizi
-      const { data: serviziData } = await supabase.from('servizi').select('*').eq('workspace_id', member.workspace_id).order('nome_servizio')
-      if (serviziData) setServizi(serviziData)
-
-      // Fetch Operatori (Staff)
-      const { data: staffData } = await supabase.from('workspace_members').select('user_id, users(id, nome, cognome)').eq('workspace_id', member.workspace_id)
-      if (staffData) {
-         setOperatori(staffData.map(s => s.users))
-      }
+    try {
+      const data = await getAgendaData()
+      setAppuntamenti(data.appuntamenti)
+      setClienti(data.clienti)
+      setServizi(data.servizi)
+      setOperatori(data.operatori)
+    } catch (err) {
+      console.error(err)
     }
     setLoading(false)
   }
@@ -88,26 +58,20 @@ export default function AgendaPage() {
 
   async function handleCreateAppointment(e: React.FormEvent) {
     e.preventDefault()
-    if (!workspaceId || !selectedCliente || !selectedServizio || !dataOraInizio) return
+    if (!selectedCliente || !selectedServizio || !dataOraInizio) return
     setSaving(true)
 
-    // Calcola data_ora_fine in base alla durata
     const inizio = new Date(dataOraInizio)
-    const fine = new Date(inizio.getTime() + durataMinuti * 60000)
 
     try {
-      const { error } = await supabase.from('appuntamenti').insert({
-        workspace_id: workspaceId,
+      await addAppuntamento({
         cliente_id: selectedCliente,
         servizio_id: selectedServizio,
         operatore_id: selectedOperatore || null,
-        data_ora_inizio: inizio.toISOString(),
-        data_ora_fine: fine.toISOString(),
-        stato: 'prenotato',
+        data_ora_inizio: inizio,
+        durata_minuti: durataMinuti,
         prezzo_finale: prezzoFinale
       })
-
-      if (error) throw error
 
       setIsModalOpen(false)
       // Reset form
@@ -129,10 +93,8 @@ export default function AgendaPage() {
   }
 
   async function updateStato(id: string, nuovoStato: string) {
-    const { error } = await supabase.from('appuntamenti').update({ stato: nuovoStato }).eq('id', id)
-    if (!error) {
-      loadData()
-    }
+    await updateAppuntamentoStatus(id, nuovoStato)
+    loadData()
   }
 
   // Filtriamo gli appuntamenti per il giorno selezionato
@@ -213,14 +175,14 @@ export default function AgendaPage() {
                <div className="flex items-center gap-6">
                   <div className="text-center min-w-[80px]">
                      <p className="text-2xl font-bold text-slate-800">{new Date(app.data_ora_inizio).toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}</p>
-                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">{app.servizi?.durata_minuti} MIN</p>
+                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">{app.servizio?.durata_minuti} MIN</p>
                   </div>
                   
                   <div className="w-1 h-12 bg-slate-200 rounded-full hidden md:block"></div>
                   
                   <div>
                     <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                      {app.clienti?.nome} {app.clienti?.cognome}
+                      {app.cliente?.nome} {app.cliente?.cognome}
                       <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getStatusColor(app.stato)}`}>
                         {app.stato.replace('_', ' ')}
                       </span>
@@ -228,13 +190,13 @@ export default function AgendaPage() {
                     
                     <div className="flex items-center gap-3 mt-1.5 text-sm text-slate-500 font-medium">
                       <span className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg">
-                         {app.servizi?.settore === 'estetica' ? <Sparkles className="w-3.5 h-3.5 text-purple-500" /> : <Scissors className="w-3.5 h-3.5 text-emerald-500" />}
-                         {app.servizi?.nome_servizio}
+                         {app.servizio?.settore === 'estetica' ? <Sparkles className="w-3.5 h-3.5 text-purple-500" /> : <Scissors className="w-3.5 h-3.5 text-emerald-500" />}
+                         {app.servizio?.nome_servizio}
                       </span>
-                      {app.users && (
+                      {app.operatore && (
                         <span className="flex items-center gap-1.5">
                           <User className="w-3.5 h-3.5" />
-                          {app.users.nome}
+                          {app.operatore.name}
                         </span>
                       )}
                     </div>

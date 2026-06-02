@@ -1,57 +1,51 @@
-'use client'
-
-import { motion } from 'framer-motion'
-import { Calendar as CalendarIcon, Users, Sparkles, Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { Calendar as CalendarIcon, Users, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
-export default function DashboardPage() {
-  const supabase = createClient()
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({ appuntamentiOggi: 0, totaleClienti: 0 })
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions)
+  
+  if (!session?.user) {
+    return null
+  }
 
-  useEffect(() => {
-    async function loadStats() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
+  // @ts-ignore
+  const userId = session.user.id
 
-      const { data: member } = await supabase.from('workspace_members').select('workspace_id').eq('user_id', session.user.id).single()
-      if (member) {
-        // Appuntamenti oggi
-        const startOfDay = new Date()
-        startOfDay.setHours(0, 0, 0, 0)
-        const endOfDay = new Date()
-        endOfDay.setHours(23, 59, 59, 999)
+  const member = await prisma.workspaceMember.findFirst({
+    where: { user_id: userId }
+  })
 
-        const { count: countAppuntamenti } = await supabase.from('appuntamenti')
-          .select('*', { count: 'exact', head: true })
-          .eq('workspace_id', member.workspace_id)
-          .gte('data_ora_inizio', startOfDay.toISOString())
-          .lte('data_ora_inizio', endOfDay.toISOString())
-        
-        // Count clienti
-        const { count: countClienti } = await supabase.from('clienti')
-          .select('*', { count: 'exact', head: true })
-          .eq('workspace_id', member.workspace_id)
-        
-        setStats({
-          appuntamentiOggi: countAppuntamenti || 0,
-          totaleClienti: countClienti || 0
-        })
+  let appuntamentiOggi = 0
+  let totaleClienti = 0
+
+  if (member) {
+    const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
+    const endOfDay = new Date()
+    endOfDay.setHours(23, 59, 59, 999)
+
+    appuntamentiOggi = await prisma.appuntamento.count({
+      where: {
+        workspace_id: member.workspace_id,
+        data_ora_inizio: {
+          gte: startOfDay,
+          lte: endOfDay
+        }
       }
-      setLoading(false)
-    }
-    loadStats()
-  }, [supabase])
+    })
 
-  if (loading) {
-    return <div className="flex justify-center p-20"><Loader2 className="w-8 h-8 animate-spin text-emerald-500" /></div>
+    totaleClienti = await prisma.cliente.count({
+      where: {
+        workspace_id: member.workspace_id
+      }
+    })
   }
 
   return (
     <div className="space-y-6">
-      {/* Welcome Banner */}
       <div className="glass rounded-3xl p-8 border border-slate-200 relative overflow-hidden flex justify-between items-center">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         <div className="relative z-10">
@@ -63,31 +57,28 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Quick Stats: Appuntamenti */}
         <Link href="/dashboard/agenda" className="glass rounded-3xl p-6 border border-slate-200 hover:border-emerald-500/50 transition-all group block">
           <div className="flex justify-between items-start mb-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
               <CalendarIcon className="w-6 h-6" />
             </div>
-            <span className="text-3xl font-bold text-slate-900">{stats.appuntamentiOggi}</span>
+            <span className="text-3xl font-bold text-slate-900">{appuntamentiOggi}</span>
           </div>
           <h3 className="font-semibold text-slate-900 text-lg">Appuntamenti Oggi</h3>
           <p className="text-sm text-slate-500 mt-1">Prenotazioni in programma</p>
         </Link>
 
-        {/* Quick Stats: Clienti */}
         <Link href="/dashboard/clienti" className="glass rounded-3xl p-6 border border-slate-200 hover:border-emerald-500/50 transition-all group block relative">
           <div className="flex justify-between items-start mb-4">
             <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:scale-110 transition-transform">
               <Users className="w-6 h-6" />
             </div>
-            <span className="text-3xl font-bold text-slate-900">{stats.totaleClienti}</span>
+            <span className="text-3xl font-bold text-slate-900">{totaleClienti}</span>
           </div>
           <h3 className="font-semibold text-slate-900 text-lg">Totale Clienti</h3>
           <p className="text-sm text-slate-500 mt-1">Anagrafiche nel salone</p>
         </Link>
 
-        {/* Quick Action: Servizi */}
         <Link href="/dashboard/servizi" className="glass rounded-3xl p-6 border border-slate-200 hover:border-emerald-500/50 transition-all group block bg-gradient-to-br from-emerald-900/20 to-transparent">
           <div className="flex justify-between items-start mb-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/30">

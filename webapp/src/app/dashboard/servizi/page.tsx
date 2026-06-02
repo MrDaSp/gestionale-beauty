@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { getServiziData, addServizio } from './actions'
 import { useRouter } from 'next/navigation'
 import { Plus, Search, Loader2, Scissors, Sparkles, Clock, Euro } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -16,12 +16,10 @@ type Servizio = {
 }
 
 export default function ServiziPage() {
-  const supabase = createClient()
   const router = useRouter()
 
   const [servizi, setServizi] = useState<Servizio[]>([])
   const [loading, setLoading] = useState(true)
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null)
   
   const [moduloParrucchieria, setModuloParrucchieria] = useState(true)
   const [moduloEstetica, setModuloEstetica] = useState(false)
@@ -39,63 +37,45 @@ export default function ServiziPage() {
 
   useEffect(() => {
     async function loadData() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.push('/login')
-        return
-      }
-
-      const { data: member } = await supabase.from('workspace_members').select('workspace_id').eq('user_id', session.user.id).single()
-      
-      if (member) {
-        setWorkspaceId(member.workspace_id)
-        
-        // Load settings
-        const { data: settings } = await supabase.from('impostazioni_salone').select('*').eq('workspace_id', member.workspace_id).maybeSingle()
-        if (settings) {
-          setModuloParrucchieria(settings.modulo_parrucchieria)
-          setModuloEstetica(settings.modulo_estetica)
-          
-          // Default selection for modal
-          if (!settings.modulo_parrucchieria && settings.modulo_estetica) {
-            setSettore('estetica')
-            setCategoria('Trattamenti Viso')
-          }
-        }
-
-        // Load services
-        const { data: serv } = await supabase.from('servizi').select('*').eq('workspace_id', member.workspace_id).order('categoria', { ascending: true })
-        if (serv) setServizi(serv)
+      try {
+        const { servizi, settings } = await getServiziData()
+        // If settings ever had modulo_parrucchieria, it doesn't anymore, so we default to true for both.
+        setModuloParrucchieria(true)
+        setModuloEstetica(true)
+        setServizi(servizi as Servizio[])
+      } catch (err) {
+        console.error(err)
       }
       setLoading(false)
     }
     loadData()
-  }, [router, supabase])
+  }, [])
 
   const categorieParrucchieria = ['Taglio e Forma', 'Colore', 'Trattamenti Tecnici', 'Styling & Acconciature', 'Altro']
   const categorieEstetica = ['Trattamenti Viso', 'Trattamenti Corpo', 'Manicure / Pedicure', 'Altro']
 
   async function handleAddServizio(e: React.FormEvent) {
     e.preventDefault()
-    if (!workspaceId) return
     setSaving(true)
 
-    const { data, error } = await supabase.from('servizi').insert({
-      workspace_id: workspaceId,
-      nome_servizio: nomeServizio,
-      categoria,
-      settore,
-      durata_minuti: parseInt(durata),
-      prezzo: parseFloat(prezzo)
-    }).select().single()
+    try {
+      const nuovo = await addServizio({
+        nome_servizio: nomeServizio,
+        categoria,
+        settore,
+        durata_minuti: parseInt(durata),
+        prezzo: parseFloat(prezzo)
+      })
 
-    if (data) {
-      setServizi([...servizi, data])
+      setServizi([...servizi, nuovo as Servizio])
       setIsModalOpen(false)
       // Reset form
       setNomeServizio('')
       setDurata('30')
       setPrezzo('0')
+    } catch (err) {
+      console.error(err)
+      alert("Errore salvataggio servizio")
     }
     setSaving(false)
   }

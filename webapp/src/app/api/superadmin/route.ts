@@ -1,62 +1,26 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { createServerClient } from '@supabase/ssr'
+import { prisma } from '@/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 
 export async function GET(request: Request) {
-  const cookieStore = await cookies()
-  const supabaseAuth = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabaseAuth.auth.getSession()
+  const session = await getServerSession(authOptions)
   
-  if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
+  if (!session?.user || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
-  const { data: workspaces, error } = await supabaseAdmin
-    .from('workspaces')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
+  const workspaces = await prisma.workspace.findMany({
+    orderBy: { createdAt: 'desc' }
+  })
 
   return NextResponse.json(workspaces)
 }
 
 export async function PUT(request: Request) {
-  const cookieStore = await cookies()
-  const supabaseAuth = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabaseAuth.auth.getSession()
+  const session = await getServerSession(authOptions)
   
-  if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
+  if (!session?.user || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -66,40 +30,21 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Missing data' }, { status: 400 })
   }
 
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
-  const { data, error } = await supabaseAdmin
-    .from('workspaces')
-    .update({ plan_name, max_clients })
-    .eq('id', id)
-    .select()
-    .single()
-
-  if (error) {
+  try {
+    const updated = await prisma.workspace.update({
+      where: { id },
+      data: { plan_name, max_clients }
+    })
+    return NextResponse.json(updated)
+  } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
-
-  return NextResponse.json(data)
 }
 
 export async function DELETE(request: Request) {
-  const cookieStore = await cookies()
-  const supabaseAuth = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) { return cookieStore.get(name)?.value },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabaseAuth.auth.getSession()
+  const session = await getServerSession(authOptions)
   
-  if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
+  if (!session?.user || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -110,19 +55,12 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Missing workspace id' }, { status: 400 })
   }
 
-  const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
-  const { error } = await supabaseAdmin
-    .from('workspaces')
-    .delete()
-    .eq('id', id)
-
-  if (error) {
+  try {
+    await prisma.workspace.delete({
+      where: { id }
+    })
+    return NextResponse.json({ success: true })
+  } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
-
-  return NextResponse.json({ success: true })
 }

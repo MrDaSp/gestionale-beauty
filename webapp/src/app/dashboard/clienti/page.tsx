@@ -3,14 +3,12 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Users, Plus, Search, Building, User, Phone, Mail, FileText, Loader2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { getClienti, addCliente } from './actions'
 import Link from 'next/link'
 
 export default function ClientiPage() {
-  const supabase = createClient()
   const [clienti, setClienti] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   
@@ -19,52 +17,35 @@ export default function ClientiPage() {
   const [cognome, setCognome] = useState('')
   const [email, setEmail] = useState('')
   const [telefono, setTelefono] = useState('')
-  const [dataNascita, setDataNascita] = useState('')
-  const [noteAllergie, setNoteAllergie] = useState('')
 
   useEffect(() => {
     async function loadData() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-
-      const { data: member } = await supabase.from('workspace_members').select('workspace_id').eq('user_id', session.user.id).single()
-      if (member) {
-        setWorkspaceId(member.workspace_id)
-        const { data: clientsData } = await supabase.from('clienti').select('*').eq('workspace_id', member.workspace_id).order('created_at', { ascending: false })
-        if (clientsData) setClienti(clientsData)
-      }
+      const data = await getClienti()
+      setClienti(data)
       setLoading(false)
     }
     loadData()
-  }, [supabase])
+  }, [])
 
   async function handleAddCliente(e: React.FormEvent) {
     e.preventDefault()
-    if (!workspaceId) return
     setSaving(true)
     
-    const { data, error } = await supabase.from('clienti').insert({
-      workspace_id: workspaceId,
-      nome,
-      cognome,
-      data_nascita: dataNascita || null,
-      note_allergie: noteAllergie,
-      email,
-      telefono
-    }).select().single()
-
-    if (data) {
-      setClienti([data, ...clienti])
+    try {
+      const nuovo = await addCliente({
+        nome,
+        cognome,
+        email,
+        telefono
+      })
+      setClienti([nuovo, ...clienti])
       setIsModalOpen(false)
-      // Reset form
       setNome('')
       setCognome('')
-      setDataNascita('')
-      setNoteAllergie('')
       setEmail('')
       setTelefono('')
-    } else {
-      console.error(error)
+    } catch (err) {
+      console.error(err)
       alert("Errore salvataggio cliente")
     }
     setSaving(false)
@@ -158,14 +139,6 @@ export default function ClientiPage() {
                     <label className="block text-sm font-medium text-slate-500 mb-1">Cognome *</label>
                     <input required type="text" value={cognome} onChange={e => setCognome(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Data di Nascita</label>
-                  <input type="date" value={dataNascita} onChange={e => setDataNascita(e.target.value)} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-500 mb-1">Note / Allergie (Formula Colore, etc)</label>
-                  <textarea value={noteAllergie} onChange={e => setNoteAllergie(e.target.value)} rows={3} className="w-full bg-white/80 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all"></textarea>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

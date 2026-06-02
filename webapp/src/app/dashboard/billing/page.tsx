@@ -1,20 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { CheckCircle2, CreditCard } from 'lucide-react'
-import { createClient } from '@/utils/supabase/client'
+import { useSession } from 'next-auth/react'
 
 export default function BillingPage() {
   const [isAnnual, setIsAnnual] = useState(false)
   const [loading, setLoading] = useState<string | null>(null)
-  const [user, setUser] = useState<any>(null)
-  const supabase = createClient()
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user) setUser(data.user)
-    })
-  }, [])
+  const { data: session } = useSession()
+  const user = session?.user
 
   const handleCheckout = async (planKey: string, planName: string, amount: number) => {
     if (!user) {

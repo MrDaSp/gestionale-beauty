@@ -74,6 +74,7 @@ export default function ResetPasswordPage() {
           ) : (
             <form action={handleSubmit} className="space-y-6">
               <div className="space-y-4">
+                <input type="hidden" name="token" value={typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('token') || '' : ''} />
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
                   <input

@@ -43,7 +43,7 @@ export default function KallosLanding() {
               Crea il tuo Salone <ChevronRight size={18} className="ml-2" />
             </button>
             <button 
-              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => router.push('/guida')}
               className="btn-secondary"
             >
               Esplora Funzioni

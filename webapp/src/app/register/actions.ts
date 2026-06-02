@@ -1,85 +1,90 @@
 'use server'
 
-import { createClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
+import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+import { sendVerificationEmail } from '@/lib/mailer'
 
-// Move client creation inside the action to guarantee fresh env variables read at runtime
 export async function register(formData: FormData) {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-    
-    if (!supabaseUrl || !supabaseKey) {
-      return { error: 'Configurazione server mancante (URL o Key).' }
-    }
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const nome = formData.get('nome') as string
+  const cognome = formData.get('cognome') as string
+  const type = formData.get('type') as string // 'singolo' or 'salone'
+  const studioName = formData.get('studio_name') as string
 
-    const supabaseAnon = createClient(supabaseUrl, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+  if (!email || !password || !nome) {
+    return { error: 'Compila tutti i campi obbligatori' }
+  }
 
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-    const nome = formData.get('nome') as string
-    const cognome = formData.get('cognome') as string
-    const type = formData.get('type') as string // 'singolo' or 'salone'
-    const studioName = formData.get('studio_name') as string
+  // Check if user already exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email }
+  })
 
-    // 1. Create the user in Supabase Auth (triggers confirmation email)
-    const { data: authData, error: authError } = await supabaseAnon.auth.signUp({
-      email,
-      password,
+  if (existingUser) {
+    return { error: 'Esiste già un account con questa email' }
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  // Start a transaction to create User, Workspace, Member, etc.
+  try {
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name: `${nome} ${cognome}`.trim(),
+      }
     })
 
-    if (authError || !authData?.user) {
-      console.error("Auth error:", authError);
-      return { error: authError?.message || 'Errore durante la registrazione' }
+    const finalStudioName = type === 'salone' && studioName ? studioName : `Salone ${cognome}`
+
+    const workspace = await prisma.workspace.create({
+      data: {
+        nome: finalStudioName,
+      }
+    })
+
+    await prisma.workspaceMember.create({
+      data: {
+        user_id: user.id,
+        workspace_id: workspace.id,
+        ruolo: 'owner'
+      }
+    })
+
+    await prisma.impostazioniSalone.create({
+      data: {
+        workspace_id: workspace.id,
+        orario_apertura: "09:00",
+        orario_chiusura: "19:00"
+      }
+    })
+
+    // Generate verification token
+    const token = crypto.randomBytes(32).toString('hex')
+    await prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+      }
+    })
+
+    // Send email
+    try {
+      await sendVerificationEmail(email, token)
+    } catch (e) {
+      console.error("Errore invio email:", e)
+      // Continue anyway, but might want to handle it better in production
     }
 
-  const userId = authData.user.id
-
-  // 2. Insert into public.users using ADMIN client (since user is not logged in yet)
-  const supabaseAdmin = createClient(supabaseUrl, supabaseKey)
-  
-  const { error: userError } = await supabaseAdmin.from('users').insert({
-    id: userId,
-    email,
-    nome,
-    cognome,
-  })
-
-  if (userError) return { error: 'Errore creazione profilo utente: ' + userError.message }
-
-  // 3. Create the Workspace
-  const finalStudioName = type === 'salone' && studioName ? studioName : `Salone ${cognome}`
-  
-  const { data: workspaceData, error: workspaceError } = await supabaseAdmin.from('workspaces').insert({
-    nome: finalStudioName,
-    tipo: type,
-  }).select('id').single()
-
-  if (workspaceError || !workspaceData) {
-    return { error: 'Errore creazione workspace: ' + workspaceError?.message }
+  } catch (error: any) {
+    console.error("Errore durante la registrazione:", error)
+    return { error: 'Errore interno del server durante la registrazione' }
   }
 
-  // 3.5 Create the default settings for the salon
-  const { error: settingsError } = await supabaseAdmin.from('impostazioni_salone').insert({
-    workspace_id: workspaceData.id,
-    modulo_parrucchieria: true,
-    modulo_estetica: false,
-  })
-
-  if (settingsError) {
-    return { error: 'Errore creazione impostazioni salone: ' + settingsError.message }
-  }
-
-  // 4. Link User to Workspace as Owner
-  const { error: memberError } = await supabaseAdmin.from('workspace_members').insert({
-    user_id: userId,
-    workspace_id: workspaceData.id,
-    ruolo: 'owner',
-  })
-
-  if (memberError) return { error: 'Errore assegnazione permessi: ' + memberError.message }
-
-  // Since we created the user via Admin API, we should let the user log in directly on the frontend
-  // Or we can just redirect them to login page to sign in
   redirect('/login?registered=true')
 }

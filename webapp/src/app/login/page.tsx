@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Scissors, Lock, Mail, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react'
-import { login } from './actions'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -14,10 +14,20 @@ export default function LoginPage() {
   async function handleSubmit(formData: FormData) {
     setLoading(true)
     setError(null)
-    const result = await login(formData)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+    })
+
     if (result?.error) {
       setError(result.error)
       setLoading(false)
+    } else {
+      window.location.href = '/dashboard'
     }
   }
 

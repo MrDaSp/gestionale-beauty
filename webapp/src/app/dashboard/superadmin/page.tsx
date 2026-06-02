@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Shield, Save, X, Pencil, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/utils/supabase/client'
+import { useSession } from 'next-auth/react'
 
 export default function SuperAdminPage() {
   const [workspaces, setWorkspaces] = useState<any[]>([])
@@ -12,19 +12,18 @@ export default function SuperAdminPage() {
   const [editData, setEditData] = useState({ plan_name: '', max_clients: 0 })
   const [message, setMessage] = useState('')
   const router = useRouter()
-  const supabase = createClient()
+  const { data: session, status } = useSession()
 
   useEffect(() => {
-    async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session || session.user.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
-        router.push('/dashboard')
-        return
-      }
-      fetchWorkspaces()
+    if (status === 'loading') return
+    
+    if (!session || session.user?.email !== process.env.NEXT_PUBLIC_SUPERADMIN_EMAIL) {
+      router.push('/dashboard')
+      return
     }
-    checkAuth()
-  }, [])
+    
+    fetchWorkspaces()
+  }, [session, status, router])
 
   const fetchWorkspaces = async () => {
     try {

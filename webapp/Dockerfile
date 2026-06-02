@@ -1,5 +1,5 @@
 FROM node:20-alpine AS base
-
+RUN apk add --no-cache openssl
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -18,6 +18,7 @@ COPY . .
 # Environment variables must be present at build time
 ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN npx prisma generate
 RUN npm run build
 
 # Production image, copy all the files and run next

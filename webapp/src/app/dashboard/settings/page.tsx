@@ -3,18 +3,14 @@
 import { motion } from 'framer-motion'
 import { User, Building, Shield, Bell, Smartphone, Mail, Settings as SettingsIcon, Loader2, Store } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
+import { getSettingsData, updateSettings } from './actions'
 
 export default function SettingsPage() {
-  const supabase = createClient()
-  const router = useRouter()
-  
   const [activeTab, setActiveTab] = useState('salone')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [user, setUser] = useState<{id: string, nome: string, cognome: string, email: string, qualifica: string, specializzazione: string, telegram_chat_id: number | null, telegram_link_code: string | null} | null>(null)
+  const [user, setUser] = useState<any>(null)
   
   // Edit state
   const [nome, setNome] = useState('')
@@ -29,63 +25,49 @@ export default function SettingsPage() {
 
   useEffect(() => {
     async function loadUser() {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.push('/login')
-        return
-      }
-      const { data } = await supabase.from('users').select('*').eq('id', session.user.id).single()
-      if (data) {
-        setUser(data)
-        setNome(data.nome || '')
-        setCognome(data.cognome || '')
-        setQualifica(data.qualifica || '')
-        setSpecializzazione(data.specializzazione || '')
-      }
-
-      const { data: member } = await supabase.from('workspace_members').select('workspace_id').eq('user_id', session.user.id).single()
-      if (member) {
-        setWorkspaceId(member.workspace_id)
-        const { data: settings } = await supabase.from('impostazioni_salone').select('*').eq('workspace_id', member.workspace_id).maybeSingle()
-        if (settings) {
-          setModuloParrucchieria(settings.modulo_parrucchieria)
-          setModuloEstetica(settings.modulo_estetica)
+      try {
+        const { user, settings, workspaceId } = await getSettingsData()
+        if (user) {
+          setUser(user)
+          // In prisma, name is a single field usually. We split it.
+          const parts = user.name?.split(' ') || []
+          setNome(parts[0] || '')
+          setCognome(parts.slice(1).join(' ') || '')
         }
-      }
+        
+        if (workspaceId) {
+          setWorkspaceId(workspaceId)
+        }
 
+        if (settings) {
+          // settings
+        }
+      } catch (err) {
+        console.error(err)
+      }
       setLoading(false)
     }
     loadUser()
-  }, [router, supabase])
-
-  // generateTelegramCode removed
+  }, [])
 
   async function handleSave() {
     if (!user) return
     setSaving(true)
     setSaved(false)
     
-    // Salva Utente
-    await supabase.from('users').update({
-      nome,
-      cognome,
-      qualifica,
-      specializzazione
-    }).eq('id', user.id)
-
-    // Salva Impostazioni Salone
-    if (workspaceId) {
-      await supabase.from('impostazioni_salone').upsert({
-        workspace_id: workspaceId,
-        modulo_parrucchieria: moduloParrucchieria,
-        modulo_estetica: moduloEstetica,
-        updated_at: new Date().toISOString()
+    try {
+      await updateSettings({
+        nome,
+        cognome,
+        workspaceId
       })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (err) {
+      console.error(err)
+      alert("Errore salvataggio")
     }
-    
     setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
   }
 
   return (
@@ -188,16 +170,7 @@ export default function SettingsPage() {
                       <p className="text-xs text-slate-500 mt-1">L'email di accesso non può essere modificata da qui.</p>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-500 mb-1">Qualifica (Es. Parrucchiere)</label>
-                        <input type="text" value={qualifica} onChange={(e) => setQualifica(e.target.value)} placeholder="Es. Estetista, Parrucchiere..." className="w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-500 mb-1">Specializzazione</label>
-                        <input type="text" value={specializzazione} onChange={(e) => setSpecializzazione(e.target.value)} placeholder="Es. Colore, Taglio Sfilato" className="w-full bg-white/50 border border-slate-300 rounded-xl px-4 py-2 text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none transition-all" />
-                      </div>
-                    </div>
+
 
                     <div className="pt-4 mt-4 border-t border-slate-200 flex items-center gap-4">
                       <button onClick={handleSave} disabled={saving} className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-all flex items-center gap-2">

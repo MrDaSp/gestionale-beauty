@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  role          String?   @default("admin")
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  memberships   WorkspaceMember[]
+  appuntamenti  Appuntamento[]
+}
+
+model Workspace {
+  id            String    @id @default(cuid())
+  nome          String
+  plan_name     String?   @default("Gratis")
+  max_clients   Int?      @default(3)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  members       WorkspaceMember[]
+  clienti       Cliente[]
+  servizi       Servizio[]
+  appuntamenti  Appuntamento[]
+  impostazioni  ImpostazioniSalone?
+}
+
+model WorkspaceMember {
+  id            String    @id @default(cuid())
+  workspace_id  String
+  user_id       String
+  ruolo         String    @default("admin")
+
+  workspace     Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([workspace_id, user_id])
+}
+
+model ImpostazioniSalone {
+  id              String    @id @default(cuid())
+  workspace_id    String    @unique
+  orario_apertura String    @default("09:00")
+  orario_chiusura String    @default("19:00")
+
+  workspace       Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+}
+
+model Cliente {
+  id            String    @id @default(cuid())
+  workspace_id  String
+  nome          String
+  cognome       String?
+  telefono      String?
+  email         String?
+  createdAt     DateTime  @default(now())
+
+  workspace     Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+  appuntamenti  Appuntamento[]
+}
+
+model Servizio {
+  id            String    @id @default(cuid())
+  workspace_id  String
+  nome_servizio String
+  durata_minuti Int
+  prezzo        Float
+  categoria     String?
+  settore       String?
+  createdAt     DateTime  @default(now())
+
+  workspace     Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+  appuntamenti  Appuntamento[]
+}
+
+model Appuntamento {
+  id              String    @id @default(cuid())
+  workspace_id    String
+  cliente_id      String
+  servizio_id     String
+  operatore_id    String?
+  data_ora_inizio DateTime
+  data_ora_fine   DateTime?
+  stato           String    @default("prenotato")
+  prezzo_finale   Float?
+  note_formula    String?
+  foto_prima      String?
+  foto_dopo       String?
+  createdAt       DateTime  @default(now())
+
+  workspace     Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+  cliente       Cliente   @relation(fields: [cliente_id], references: [id], onDelete: Cascade)
+  servizio      Servizio  @relation(fields: [servizio_id], references: [id], onDelete: Cascade)
+  operatore     User?     @relation(fields: [operatore_id], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
+}
